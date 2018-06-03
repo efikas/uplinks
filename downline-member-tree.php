@@ -1,43 +1,47 @@
 <?php
-
-//use \includes\Tree as Tree;
-//
-//use
-
 /**
  * @author Akintola Oluwaseun
  * @copyright 2017
  */
 
-
 //ob_start();
 session_start();
-if(!isset($_SESSION['user'])) {
-?>
+if(!isset($_SESSION['user'])) { ?>
+
     <script type="text/javascript">
         document.location.href="index.php?msg=Thank you ! You are now logged out!";
     </script>
 
 <?php
-  die();
-} else {
-?>
-<?php
+
+    die();
+
+}
+else {
+
+    /**
+     * To work on this page, you need to have a goo knowledge og laravel eleoquent
+     * This page was modified to use eloquent for easier management
+     */
 
   require_once 'app/init.php';
   require_once 'includes/Tree.php';
   
   $user = new User();
   $tree = new Tree();
+
   
   $username = $_SESSION['user'];
   $user = User::where('email', $username)->first();
+
+//  $user2 = User_rank::where('myid', $user->myid)->first();
+//  dd($user2);
 
 //   dd($_SESSION['user']);
 
     if(isset($_POST['submit'])){
         //get the id of the user name
-        $userName = trim($_POST['userN']);
+        $userName = trim($_POST['userN']); // Username from post
         $searchId = User::where('userName', $userName)->pluck('myid');
 
         //check if id exist in downlink of user
@@ -56,6 +60,7 @@ if(!isset($_SESSION['user'])) {
 //        dd($tree->DownLinkArray($user->myid));
     }
     else {
+//        dd($tree->DownLinkArray($user->myid));
         $userTree = $tree->DisplayTree($user->myid);
     }
 

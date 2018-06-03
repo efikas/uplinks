@@ -5,7 +5,7 @@
     require_once 'includes/ReferrerTree.php';
 
     $user = new User();
-    $tree = new ReferrerTree();
+    $tree = new Tree();
 
     $username = $_SESSION['user'];
     $user = User::where('email', $username)->first();

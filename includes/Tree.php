@@ -28,21 +28,17 @@ class Tree
     }
 
     /**
-     * Create a new contextual binding builder.
-     *
      * @param id the user id of the user
-     * @param  string  $concrete
      *
-     * @return void
-     * @throws InvalidArgumentException
+     * @return the tree markup
      */
     public function DisplayTree($id)
     {
-        $computed = Tree::compute($id);
+        $computed = Tree::DownLinkArray($id);
         $tree = "";
-        $img_stage = 1;
+        $myStage = 1;
 
-        $getTree = function($computed) use ( $img_stage, &$getTree ) {
+        $getTree = function($computed) use ( $myStage, &$getTree ) {
 
             $childTree = "";
             // Base case
@@ -51,13 +47,21 @@ class Tree
             }
 
             foreach ($computed as $key => $value) {
-//                dd($value);
-                $childTree .= '<li>';
-                $childTree .= "<img width='40px' height='40px' src='assets/img/stage".$img_stage.".png'><br />";
-                $childTree .= $value['fullName'];
-                $childTree .= $getTree($value['referred']);
-                $childTree .= '</li>';
+
+                if(sizeof($value) > 0){
+                    $childTree .= '<li style="padding: 25px 30px 0px 30px">';
+                    $childTree .= "<img width='40px' height='40px' src='assets/img/stage".$myStage.".png'><br />";
+                    $childTree .= $value['fullName'];
+                    $childTree .= $getTree($value['downLineMember']);
+                    $childTree .= '</li>';
+                }
+                else{
+                    $childTree .= '<li style="padding: 25px 30px 0px 30px">';
+                    $childTree .= "<img width='40px' height='40px' src='assets/img/stage0.png'><br />";
+                    $childTree .= '</li>';
+                }
             }
+
             if ($childTree !== "") {
                 return "<ul>" . $childTree . "</ul>";
             }
@@ -65,107 +69,98 @@ class Tree
         };
 
         if (sizeof($computed) > 0) {
+            //get the stage of the main user
+            $myStage = isset($computed[0]['stage']) ?: $computed[0]['stage'] ?: 1;
+
             $tree = '<ul>';
-            $tree .= '<li>';
-            $tree .= "<img width='40px' height='40px' src='assets/img/stage".$img_stage.".png'><br />";
+            $tree .= '<li style="padding: 25px 30px 0px 30px">';
+            $tree .= "<img width='40px' height='40px' src='assets/img/stage".$myStage.".png'><br />";
             $tree .= $computed[0]['fullName'];
-            $tree .= $getTree($computed[0]['referred']);
+            $tree .= $getTree($computed[0]['downLineMember']);
             $tree .= '</li></ul>';
         }
         return $tree;
     }
 
-    public function DownLinkArray($id)
+    /**
+    * @param id the user id of the user
+    *
+    * @return basic immediate Downlink information of a user
+    */
+    public function DownLinkArray($userId)
     {
-        $computed = Tree::compute($id);
-        $downLink = [];
-
-        $getReferred = function($computed) use ( &$downLink, &$getReferred ) {
-
-            // Base case
-            if (sizeof($computed) >1) {
-                foreach ($computed as $key => $value) {
-                    array_push($downLink, $value['id']);
-                    $getReferred($value['referred']);
-                }
-            }
-        };
-
-        if (sizeof($computed) > 0) {
-            array_push($downLink, $computed[0]['id']);
-           $getReferred($computed[0]['referred']);
-        }
-        return $downLink;
-    }
-
-    public function compute($userId)
-    {
-        $stage = 1;
         $userTree = []; // the final tree
+        $stepCounter = 0;
 
         $user = new UserClass();
         $ref = new Referred();
 
-        //recursive method to get the referred and their referred
-        $_getRef = function ($id) use ( $user, $ref, &$_getRef ) {
-
+        // recursive method to get the referred and their referred
+        $_getRef = function ($id) use ( $user, $ref, &$_getRef, &$stepCounter ) {
             $result = [];
-            $referred = $ref->getReferred($id); // get user referrers
+            $downLinkArray = $ref->getDirectDownLink($id); // get user 2 immediate downlink
 
             // Base case
-            if (sizeof($referred) < 1) {
+            if (sizeof($downLinkArray) < 1) {
                 return [];
             }
 
             //loop through the referred users
-            foreach ($referred as $key => $value) {
-
-                //analyze each referred
-                $refererDetail = $_getRef($value);
-
+            foreach ($downLinkArray as $key => $value) {
 
                 array_push($result, [
                     'id'                    => $value,
                     'fullName'              => $user->getFullName($value),
-                    'referred'              => $refererDetail,
+                    'username'              => $user->getUsername($value),
+                    'downLineMember'        => Tree::getUserDownLink($value),
                 ]);
-            }
 
+            }
             return $result;
         };
 
-        //initiate the final tree by adding the parent to the list
-        $refererDetail = $_getRef($userId);
+        // initiate the final tree by adding the parent to the list
+        $downLineMemberDetail = $_getRef($userId);
+
         array_push($userTree, [
             'id'                    => $userId,
             'fullName'              => $user->getFullName($userId),
-            'referred'              => $refererDetail,
+            'username'              => $user->getUsername($userId),
+            'downLineMember'        => $downLineMemberDetail,
         ]);
 
         return $userTree;
     }
 
 
-    public function myReferred($refererDetail)
+    /**
+     * Create a new contextual binding builder.
+     *
+     * @return Array return the array of the object containing name and id of the referred
+     */
+    public function getUserDownLink($userId)
     {
-        $_referred = [];
-        foreach ($refererDetail as $key => $referred) {
-            array_push($_referred, $referred['referred']);
+        $userDownLink = [];
+        $user = new UserClass();
+        $ref = new Referred();
+        $downLinkArray = $ref->getDirectDownLink($userId); // get user 2 immediate downlink
+
+        //loop through the referred users
+        for($i = 0; $i < 2; $i++){
+            if(isset($downLinkArray[$i])){
+                array_push($userDownLink, [
+                    'id'                    => $downLinkArray[$i],
+                    'fullName'              => $user->getFullName($downLinkArray[$i]),
+                    'username'              => $user->getUsername($downLinkArray[$i]),
+                ]);
+            }
+            else{
+                array_push($userDownLink, []);
+            }
         }
 
-        return $_referred;
+       return $userDownLink;
     }
-
-    public function myReferredLevel($refererDetail)
-    {
-        $_levels = [];
-        foreach ($refererDetail as $key => $referred) {
-            array_push($_levels, $referred['level']);
-        }
-
-        return $_levels;
-    }
-
 
 }
 
@@ -180,38 +175,32 @@ class Tree
  * @license  no licence
  * @link     http://
  */
-class Referred
-{
+class Referred {
     /**
      * Create a new contextual binding builder.
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
+    public function __construct(){}
 
     /**
      * Create a new contextual binding builder.
      *
      * @return Array return the array of the object containing name and id of the referred
      */
-    public function getReferred($id)
+    public function getDirectDownLink($id)
     {
-        $referred = [];
-        $refElements = ['desc_1', 'desc_2', 'desc_3', 'desc_4', 'desc_5', 'desc_6'];
-        $user = new UserClass();
-        $userRank = User_rank::where('myid', $id)->first();
+        $directDownLink = [];
+        $userRank = User_rank::where('superior_id', $id)->get(['myid']);
+        $counter = 0;
 
-        foreach ($refElements as $key => $value) {
-            if ($userRank[$value]) {
-                // echo $userRank[$value] . "  -   ";
-                array_push($referred, $userRank[$value]);
+         foreach ($userRank as $value){
+             if($counter > 2) return $directDownLink;
 
-            }
-        }
-
-        return $referred;
+             array_push($directDownLink, $value->myid);
+             $counter++;
+         }
+        return $directDownLink;
     }
 
 }
@@ -225,25 +214,39 @@ class Referred
  * @license  no licence
  * @link     http://
  */
-class UserClass
-{
+class UserClass {
     /**
      * Create a new contextual binding builder.
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
+    public function __construct(){}
 
     public function getFullName($id)
     {
-        // $user = new User();
         $user = User::where('myid', $id)->first();
         if ($user) {
-            return $user->firstName . ' ' . $user->lastName . '<br />' . $id;
+            return '<b>' . $user->userName . '</b><br />' . $user->firstName . ' ' . $user->lastName;
         }
         return '';
+    }
+
+    public function getUsername($id)
+    {
+        $user = User::where('myid', $id)->first();
+        if ($user) {
+            return $user->userName;
+        }
+        return '';
+    }
+
+    public function getStage($id)
+    {
+        $user = User_rank::where('myid', $id)->first();
+        if ($user) {
+            return $user->stage;
+        }
+        return '1';
 
     }
 }
