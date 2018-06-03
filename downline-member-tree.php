@@ -59,8 +59,6 @@ if(!isset($_SESSION['user'])) {
         $userTree = $tree->DisplayTree($user->myid);
     }
 
-
-
 }
 ?>
 <!DOCTYPE html>
