@@ -34,7 +34,32 @@ if(!isset($_SESSION['user'])) {
   $user = User::where('email', $username)->first();
 
 //   dd($_SESSION['user']);
-  $userTree = $tree->DisplayTree($user->myid);
+
+    if(isset($_POST['submit'])){
+        //get the id of the user name
+        $userName = trim($_POST['userN']);
+        $searchId = User::where('userName', $userName)->pluck('myid');
+
+        //check if id exist in downlink of user
+        if(sizeof($searchId) > 0){
+            if(in_array($searchId[0], $tree->DownLinkArray($user->myid))){
+                $userTree = $tree->DisplayTree($searchId[0]);
+            }
+            else {
+                    $userTree= "Username name does not exist in your downlink";
+                }
+        }
+        else {
+            $userTree= "Username does not exist";
+        }
+
+//        dd($tree->DownLinkArray($user->myid));
+    }
+    else {
+        $userTree = $tree->DisplayTree($user->myid);
+    }
+
+
 
 }
 ?>
@@ -53,72 +78,7 @@ if(!isset($_SESSION['user'])) {
     <link href="dashboard_files/verticalbargraph.css" rel="stylesheet" type="text/css">
 </head>
 <body style="width: auto !important;">
-<?php
 
-if( isset($_POST['submit']) ) {
-        $userN = trim($_POST['userN']);    
-         $query= mysqli_query($dbc,"SELECT * FROM `user_table` WHERE `userName`='$userN'"); 
-       $row = mysqli_fetch_array($query);
-       $user_todisplay = $row['myid'];
-       
- $datas = array();
-    searchmym($myid);
- //print_r($datas);
-     //  $key = array_search('1509227175-1630127167', $array);
-      if (in_array($user_todisplay, array_column($datas, 'id'))){echo "Success!! User found";
-      
- $datas = array();
-  getmym($user_todisplay, 1);
-  //print_r($datas);
-      ?>
-<table style="width:100%;text-align:center;border:2px solid #000;">
-<tr><td><img src="dashboard_files/logo-inverse.png" style="width:300px;"></td></tr>
-<tr><td>&nbsp;</td></tr>
-<tr><td><h3>Downline Member Genealogy of <?php echo $myid; ?></h3></td></tr>
-</table>
-<form name="info" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off">
-<input type="hidden" name="url" value="metrixlevel.php">
-<table style="width:100%;text-align:center;border:2px solid #000;">
-
-<tr><td>Search a downline member : <input name="userN" type="text"/>&nbsp;&nbsp;<input type="submit" name="submit" value="Search"></td></tr>
-</table></form>
-
- 
-<div class="tree" style="height:auto ;width:3000px !important">
-<?php 
-echo(generatePageTree($datas));
-            ?>
-            
-            </div>    
-     <?php 
-      
-      
-      
-      }else {echo "Sorry, this user is not in your downliine link";
-      
-      ?>
-<table style="width:100%;text-align:center;border:2px solid #000;">
-<tr><td><img src="dashboard_files/logo-inverse.png" style="width:300px;"></td></tr>
-<tr><td>&nbsp;</td></tr>
-<tr><td><h3>Downline Member Genealogy of <?php echo $myid; ?></h3></td></tr>
-</table>
-<form name="info" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off">
-<input type="hidden" name="url" value="metrixlevel.php">
-<table style="width:100%;text-align:center;border:2px solid #000;">
-
-<tr><td>Search a downline member : <input name="userN" type="text"/>&nbsp;&nbsp;<input type="submit" name="submit" value="Search"></td></tr>
-</table></form>
-       <?php
-      }
-    }else{ 
-
- $datas = array();
- 
- 
-//  getmym($myid, 1);
-
-
-?>
 <table style="width:100%;text-align:center;border:2px solid #000;">
 <tr><td><img src="dashboard_files/logo-inverse.png" style="width:300px;"></td></tr>
 <tr><td>&nbsp;</td></tr>
@@ -131,14 +91,12 @@ echo(generatePageTree($datas));
 <tr><td>Search a downline member : <input name="userN" type="text"/>&nbsp;&nbsp;<input type="submit" name="submit" value="Search"></td></tr>
 </table>
 </form>
-<div class="tree" style="height:auto; width:auto !important; overflow: visible;">
-<?php 
-    // echo(generatePageTree($datas));
-    echo $userTree
-?>
-   </div>
-<?php } ?>
-    <table style="margin-top: 30px;" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#CCCCCC">
+<div class="tree text-center" style="margin-left: 15%; !important; overflow: visible; height: 500px">
+<?php echo $userTree ?>
+</div>
+
+<!--<div style="margin-top: 150px; height:5px; background-color: #1f77b4"></div>-->
+    <table style="" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#CCCCCC">
         <tr>
             <td><div align="center"><strong>Blank</strong></div></td>
             <td ><div align="center"><strong>Associate Member</strong></div></td>
@@ -146,7 +104,6 @@ echo(generatePageTree($datas));
             <td ><div align="center"><strong>Super Master</strong></div></td>
             <td ><div align="center"><strong>Minister</strong></div></td>
             <td ><div align="center"><strong>Prime Minister</strong></div></td>
-            
             
         </tr>
         <tr>
@@ -162,4 +119,4 @@ echo(generatePageTree($datas));
                       
    </body>
       
-      </html>
+</html>

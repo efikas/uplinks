@@ -75,6 +75,29 @@ class Tree
         return $tree;
     }
 
+    public function DownLinkArray($id)
+    {
+        $computed = Tree::compute($id);
+        $downLink = [];
+
+        $getReferred = function($computed) use ( &$downLink, &$getReferred ) {
+
+            // Base case
+            if (sizeof($computed) >1) {
+                foreach ($computed as $key => $value) {
+                    array_push($downLink, $value['id']);
+                    $getReferred($value['referred']);
+                }
+            }
+        };
+
+        if (sizeof($computed) > 0) {
+            array_push($downLink, $computed[0]['id']);
+           $getReferred($computed[0]['referred']);
+        }
+        return $downLink;
+    }
+
     public function compute($userId)
     {
         $stage = 1;
