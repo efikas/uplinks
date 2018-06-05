@@ -1,16 +1,50 @@
-<?php include('head.php'); ?>
 <?php
 
+    include('head.php');
+
+
     require_once 'app/init.php';
-    require_once 'includes/ReferrerTree.php';
+    require_once 'includes/Tree.php';
 
     $user = new User();
     $tree = new Tree();
 
+
     $username = $_SESSION['user'];
     $user = User::where('email', $username)->first();
-    $userTree = $tree->DisplayTree($user->myid);
+
+    //  $user2 = User_rank::where('myid', $user->myid)->first();
+    //  dd($user2);
+
+    //   dd($_SESSION['user']);
+
+    if(isset($_POST['submit'])){
+        //get the id of the user name
+        $userName = trim($_POST['userN']); // Username from post
+        $searchId = User::where('userName', $userName)->pluck('myid');
+
+        //check if id exist in downlink of user
+        if(sizeof($searchId) > 0){
+            if(in_array($searchId[0], $tree->DownLinkArray($user->myid))){
+                $userTree = $tree->DisplayTree($searchId[0]);
+            }
+            else {
+                $userTree= "Username name does not exist in your downlink";
+            }
+        }
+        else {
+            $userTree= "Username does not exist";
+        }
+
+    //        dd($tree->DownLinkArray($user->myid));
+    }
+    else {
+    //        dd($tree->DownLinkArray($user->myid));
+        $userTree = $tree->DisplayTree($user->myid);
+    }
+
 ?>
+
 
 <section id="page-title" class="row">
 

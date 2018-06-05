@@ -344,23 +344,23 @@ if (isset($_POST['register'])) {
             
             <div class="row">
                 <div class="col-sm-10">
-                    <?php if ($top_success) { ?>
-                        <div class="alert alert-success alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <h4><i class="icon fa fa-info"></i> Success!</h4>
-                            <h3>Registration Successful</h3>
-                        </div>
-                    <?php 
-                    }
-                    if ($top_error) { 
-                    ?>
-                    <div class="alert alert-error alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-info"></i> Alert!</h4>
-                        <h3><?php echo $top_error ?></h3>
-                    <!--h3>An Error occur during registration</h3-->
-                    </div>
-                    <?php } ?>
+                        <?php //if ($top_success) { ?>
+<!--                        <div class="alert alert-success alert-dismissable">-->
+<!--                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>-->
+<!--                            <h4><i class="icon fa fa-info"></i> Success!</h4>-->
+<!--                            <h3>Registration Successful</h3>-->
+<!--                        </div>-->
+                    <?php
+//                    }
+//                    if ($top_error) {
+//                    ?>
+<!--                    <div class="alert alert-error alert-dismissable">-->
+<!--                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>-->
+<!--                        <h4><i class="icon fa fa-info"></i> Alert!</h4>-->
+<!--                        <h3>--><?php //echo $top_error ?><!--</h3>-->
+<!--                    <!--h3>An Error occur during registration</h3-->-->
+<!--                    </div>-->
+<?php //} ?>
                 </div>
             </div>
             <div class="row">
@@ -403,7 +403,7 @@ if (isset($_POST['register'])) {
                                 <span id="referer_success" class="glyphicon glyphicon-ok success" style="color: rgba(46,148,15,0.99); display: none"></span>
                                 <span class="glyphicon glyphicon-remove referer_error" style="color: red; display: none;"></span>
                             </div>
-                            <label class="error_msg"><?php echo $error_ref_username ?></label>
+                            <label class="error_msg"><?php //echo $error_ref_username ?></label>
                         </div>
                         <div class="form-group">
                             <br/>

@@ -35,6 +35,7 @@ class Tree
     public function DisplayTree($id)
     {
         $computed = Tree::DownLinkArray($id);
+//        dd($computed);
         $tree = "";
         $myStage = 1;
 
@@ -52,7 +53,7 @@ class Tree
                     $childTree .= '<li style="padding: 25px 30px 0px 30px">';
                     $childTree .= "<img width='40px' height='40px' src='assets/img/stage".$myStage.".png'><br />";
                     $childTree .= $value['fullName'];
-                    $childTree .= $getTree($value['downLineMember']);
+                    $childTree .= (isset($value['downLineMember'])) ? $getTree($value['downLineMember']) : '';
                     $childTree .= '</li>';
                 }
                 else{
@@ -70,7 +71,7 @@ class Tree
 
         if (sizeof($computed) > 0) {
             //get the stage of the main user
-            $myStage = isset($computed[0]['stage']) ?: $computed[0]['stage'] ?: 1;
+            //$myStage = isset($computed[0]['stage']) ?: $computed[0]['stage'] ?: 1;
 
             $tree = '<ul>';
             $tree .= '<li style="padding: 25px 30px 0px 30px">';

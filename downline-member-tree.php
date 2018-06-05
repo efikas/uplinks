@@ -24,46 +24,16 @@ else {
      * This page was modified to use eloquent for easier management
      */
 
-  require_once 'app/init.php';
-  require_once 'includes/Tree.php';
-  
-  $user = new User();
-  $tree = new Tree();
+    require_once 'app/init.php';
+    require_once 'includes/TranversalTree.php';
 
-  
-  $username = $_SESSION['user'];
-  $user = User::where('email', $username)->first();
+    $user = new User();
+    $tree = new TranversalTree();
 
-//  $user2 = User_rank::where('myid', $user->myid)->first();
-//  dd($user2);
-
-//   dd($_SESSION['user']);
-
-    if(isset($_POST['submit'])){
-        //get the id of the user name
-        $userName = trim($_POST['userN']); // Username from post
-        $searchId = User::where('userName', $userName)->pluck('myid');
-
-        //check if id exist in downlink of user
-        if(sizeof($searchId) > 0){
-            if(in_array($searchId[0], $tree->DownLinkArray($user->myid))){
-                $userTree = $tree->DisplayTree($searchId[0]);
-            }
-            else {
-                    $userTree= "Username name does not exist in your downlink";
-                }
-        }
-        else {
-            $userTree= "Username does not exist";
-        }
-
-//        dd($tree->DownLinkArray($user->myid));
-    }
-    else {
-//        dd($tree->DownLinkArray($user->myid));
-        $userTree = $tree->DisplayTree($user->myid);
-    }
-
+    $username = $_SESSION['user'];
+    $user = User::where('email', $username)->first();
+//    dd($tree->compute($user->myid));
+    $userTree = $tree->DisplayTranversalTree($user->myid);
 }
 ?>
 <!DOCTYPE html>
@@ -94,7 +64,7 @@ else {
 <tr><td>Search a downline member : <input name="userN" type="text"/>&nbsp;&nbsp;<input type="submit" name="submit" value="Search"></td></tr>
 </table>
 </form>
-<div class="tree text-center" style="margin-left: 15%; !important; overflow: visible; height: 500px">
+<div class="tree text-center" style="overflow: visible; width: 2000px !important">
 <?php echo $userTree ?>
 </div>
 
