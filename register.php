@@ -2,6 +2,15 @@
 
 if (isset($_POST['register'])) {
 
+    /**
+     * To work on this page, you need to have a goo knowledge og laravel eleoquent
+     * This page was modified to use eloquent for easier management
+     */
+
+    require_once 'app/init.php';
+
+    $user = new User();
+
     //declarations
     $registration_charge = 40;
 
@@ -12,24 +21,20 @@ if (isset($_POST['register'])) {
     $firstname = htmlspecialchars(strip_tags(trim($_POST['firstname'])));
     $lastname = htmlspecialchars(strip_tags(trim($_POST['lastname'])));
     $address = htmlspecialchars(strip_tags(trim($_POST['address'])));
-
     $country = htmlspecialchars(strip_tags(trim($_POST['country'])));
     $state = htmlspecialchars(strip_tags(trim($_POST['state'])));
     $city = htmlspecialchars(strip_tags(trim($_POST['city'])));
-
     $phone = htmlspecialchars(strip_tags(trim($_POST['phone'])));
     $dob = htmlspecialchars(strip_tags(trim($_POST['dob'])));
     $gender = htmlspecialchars(strip_tags(trim($_POST['gender'])));
-    // $superior_id = htmlspecialchars(strip_tags(trim($_POST['superior_id'])));
+     $superior_id = htmlspecialchars(strip_tags(trim($_POST['superior_id'])));  // this is the id of the parent of the registering user
     // $occupation = htmlspecialchars(strip_tags(trim($_POST['occupation'])));
-    
     $username = htmlspecialchars(strip_tags(trim($_POST['username'])));
     $email = htmlspecialchars(strip_tags(trim($_POST['email'])));
     $pass = htmlspecialchars(strip_tags(trim($_POST['pass'])));
     $pass2 = htmlspecialchars(strip_tags(trim($_POST['pass2'])));
     $tran_pass = htmlspecialchars(strip_tags(trim($_POST['tran_pass'])));
     $tran_pass2 = htmlspecialchars(strip_tags(trim($_POST['tran_pass2'])));
-    
     $payer_username = htmlspecialchars(strip_tags(trim($_POST['payer_username'])));
     $payer_pass = htmlspecialchars(strip_tags(trim($_POST['payer_pass'])));
     $payer_tran_pass = htmlspecialchars(strip_tags(trim($_POST['payer_tran_pass'])));
@@ -41,21 +46,34 @@ if (isset($_POST['register'])) {
     // $ref_username = htmlspecialchars(strip_tags(trim($_POST['ref_username'])));
 
     //checking for errors
-    require_once 'dbconnect.php';
+//    require_once 'dbconnect.php';
 
     if (empty($referer)) { 
         $error = true; 
         $error_referer = "Please enter your referer username."; 
-    } else {
-        $res = mysqli_query($dbc, "SELECT * FROM user_table WHERE userName='$referer'");
-        $row = mysqli_fetch_array($res);
-        $count = mysqli_num_rows($res); // if uname/pass correct it returns must be 1 row
+    }
+    else {
         $referer_id = '';
-        if ($count == 1) {
-            $referer_id = $row['myid'];
-        } else {
-            $error = true; $error_referer = "Please enter a correct referer id.";
+
+        // check if the referrer exist
+        $ref = User::where('userName', $referer)->first();
+        if($ref){
+            $referer_id = $ref->myid;
         }
+        else {
+            $error = true;
+            $error_referer = "Please enter a correct referer id.";
+        }
+
+//        $res = mysqli_query($dbc, "//SELECT * FROM user_table WHERE userName='$referer'");
+//        $row = mysqli_fetch_array($res);
+//        $count = mysqli_num_rows($res); // if uname/pass correct it returns must be 1 row
+//        $referer_id = '';
+//        if ($count == 1) {
+//            $referer_id = $row['myid'];
+//        } else {
+//            $error = true; $error_referer = "Please enter a correct referer id.";
+//        }
     }
 
     if (empty($firstname)) { 
@@ -63,59 +81,74 @@ if (isset($_POST['register'])) {
         $error_firstName = "Please enter your Firstname."; 
     }
     if (empty($lastname)) { 
-        $error = true; $error_lastname = "Please enter your Lastname."; 
+        $error = true;
+        $error_lastname = "Please enter your Lastname.";
     }
     if (empty($address)) { 
-        $error = true; $error_address = "Please enter your Address."; 
+        $error = true;
+        $error_address = "Please enter your Address.";
     }
     if ($country == "") { 
-        $error = true; $error_country = "Please enter your Country."; 
+        $error = true;
+        $error_country = "Please enter your Country.";
     }
     if (empty($city)) { 
-        $error = true; $error_city = "Please enter your City."; 
+        $error = true;
+        $error_city = "Please enter your City.";
     }
     if (empty($state)) { 
-        $error = true; $error_state = "Please enter your State."; 
+        $error = true;
+        $error_state = "Please enter your State.";
     }
     if ($gender == "") { 
-        $error = true; $error_gender = "Please enter your Gender."; 
+        $error = true;
+        $error_gender = "Please enter your Gender.";
     }
 
     if (empty($phone)) { 
-        $error = true; $error_phone = "Please enter your Phone Number."; 
+        $error = true;
+        $error_phone = "Please enter your Phone Number.";
     }
     
     if (empty($dob)) { 
-        $error = true; $error_dob = "Please enter your Date of Birth."; 
+        $error = true;
+        $error_dob = "Please enter your Date of Birth.";
     }
 
-    // if (empty($superior_id)) {
-    //     $error = true; $error_superior_id = "Please enter your referer id.";
-    // } 
-    // else {
-    //     $res = mysqli_query($dbc, "SELECT * FROM user_table WHERE userName='$ref_username'");
-    //     $row = mysqli_fetch_array($res);
-    //     $count = mysqli_num_rows($res); // if uname/pass correct it returns must be 1 row
-    //     $referer_id = '';
-    //     if ($count == 1) {
-    //         $referer_id = $row['myid'];
-    //     } else {
-    //         $error = true; $error_superior_id = "Please enter a correct referer id.";
-    //     }
-    // }
+     if (empty($superior_id)) {
+         $error = true;
+         $error_superior_id = "Please enter your referer id.";
+     }
+     else {
+         $superior_id = '';
+
+         // check if the referrer exist
+         $sup = User::where('userName', $ref_username)->first();
+         if($ref){
+             $superior_id = $sup->myid;
+         }
+         else {
+             $error = true;
+             $error_superior_id = "Please enter a correct referer id.";
+         }
+     }
 
     
     if (empty($username)) { 
-        $error = true; $error_username = "Please enter your Username."; 
+        $error = true;
+        $error_username = "Please enter your Username.";
     }
     if (empty($email)) { 
-        $error = true; $error_email = "Please enter your Email."; 
+        $error = true;
+        $error_email = "Please enter your Email.";
     }
     if (empty($pass)) { 
-        $error = true; $error_pass = "Please enter your password."; 
+        $error = true;
+        $error_pass = "Please enter your password.";
     }
     if (empty($pass2)) { 
-        $error = true; $error_pass2 = "Please enter the confirmation password."; 
+        $error = true;
+        $error_pass2 = "Please enter the confirmation password.";
     }
 
     if (!empty($pass) && !empty($pass2) && $pass != $pass2) {
@@ -124,10 +157,12 @@ if (isset($_POST['register'])) {
     }
 
     if (empty($tran_pass)) { 
-        $error = true; $error_tran_pass = "Please enter your transaction password."; 
+        $error = true;
+        $error_tran_pass = "Please enter your transaction password.";
     }
     if (empty($tran_pass2)) { 
-        $error = true; $error_tran_pass2 = "Please enter the confirmation transaction password."; 
+        $error = true;
+        $error_tran_pass2 = "Please enter the confirmation transaction password.";
     }
 
     if (!empty($tran_pass) && !empty($tran_pass2) && $tran_pass != $tran_pass2) {
@@ -137,14 +172,17 @@ if (isset($_POST['register'])) {
 
 
     if (empty($payer_username)) { 
-        $error = true; $error_payer_username = "Please enter the Payer Username."; 
+        $error = true;
+        $error_payer_username = "Please enter the Payer Username.";
     }
     if (empty($payer_pass)) { 
-        $error = true; $error_payer_pass = "Please enter the Payer password."; 
+        $error = true;
+        $error_payer_pass = "Please enter the Payer password.";
     }
 
     if (empty($payer_tran_pass)) { 
-        $error = true; $error_payer_tran_pass = "Please enter the transaction Payer password."; 
+        $error = true;
+        $error_payer_tran_pass = "Please enter the transaction Payer password.";
     }
 
 
@@ -164,59 +202,87 @@ if (isset($_POST['register'])) {
 
     if (!$error) {
         //get the balance of the payer and confirm if its greater than $40
-        $res = mysqli_query($dbc, "SELECT * FROM user_table WHERE userName='$payer_username'");
-        $row = mysqli_fetch_array($res);
-        $count = mysqli_num_rows($res); // if uname/pass correct it returns must be 1 row
+        $res = User::where('userName', $payer_username)->first();
 
-        if ($count == 1 && $row['password'] == hash('sha256', $payer_pass) && $row['t_password'] == hash('sha256', $payer_tran_pass)) {
-            $payer_id = $row['myid'];
-            $res2 = mysqli_query($dbc, "SELECT * FROM user_rank WHERE myid='$payer_id'");
-            $row2 = mysqli_fetch_array($res2);
-            $count2 = mysqli_num_rows($res); // if uname/pass correct it returns must be 1 row
-            // echo mysqli_error($dbc);
+        if($res && $res->password == hash('sha256', $payer_pass) && $res->t_password == hash('sha256', $payer_tran_pass)) {
 
-            if ($count2 == 1 && $row2['balance'] >= $registration_charge ) {
+            // get the payer id
+            $payer_id = $res->myid;
 
-                //deduct 40 dollars from the balance
-                $balance = $row2['balance'] - $registration_charge;
-                $sql = "UPDATE user_rank SET balance='$balance' WHERE myid='$payer_id'";
+            // check if the payer has enough balance to pay for the registration
+            $payer = User_rank::where('myid', $payer_id)->first();
 
-                if (mysqli_query($dbc, $sql)) {
+            if($payer && $payer->balance >= $registration_charge) {
+                // deduct 40 dollars from the payer's balance
+                $balance = $payer->balance - $registration_charge;
+                $payed = User_rank::where('myid', $payer)->update(['balance' => $balance]);
+
+                if($payed) { //if payment successful
                     //register new user
                     $password = hash('sha256', $pass);
                     $added = date("Y-m-d h:i:s a");
-                    $myId = uniqid(). '-' . uniqid();
-                    // $myId = uniqid(). '-' . md5(uniqid(mt_rand(), true).microtime(true));
 
-                    $sql = "INSERT INTO user_table (userName, firstName, lastName, gender, occupation, dob, country, address, city, state, zipcode, phoneNo, email, password, myid, superior_id) 
-                            VALUES ('$username', '$firstname', '$lastname', '$gender', '$occupation', '$dob', '$country', '$address', '$city', '$state', '$zipcode', '$phone', '$email', '$password', '$myId', '$referer_id')";
-                     
-                    if (mysqli_query($dbc, $sql)) {
-                        //add to user_rank table
-                        $sql2 = "INSERT INTO user_rank (email, myid, superior_id, status) VALUES ('$email', '$myId', '$referer_id', 'paid')";
-                        if (mysqli_query($dbc, $sql2)) { 
-                            header("Location: reg_success.php");                           
-                            // $top_success = "Registration successful.";
-                        } else {
+                    // todo:: change the mode of the $myId to md5($username . $added)
+                    $myId = uniqid(). '-' . uniqid();
+
+                    // insert user record on the user_ table
+                    $_usertable  = User::create([
+                            'myid' => $myId,
+                            'superior_id' => $superior_id,
+                            'userName' => $username,
+                            'firstName' => $firstname,
+                            'lastName' => $lastname,
+                            'gender' => $gender,
+//                            'occupation' => $occupation,
+                            'dob' => $dob,
+                            'country' => $country,
+                            'address' => $address,
+                            'city' => $city,
+                            'state' => $state,
+                            'zipcode' => $zipcode,
+                            'phoneNo' => $phone,
+                            'email' => $email,
+                            'password' => $password,
+                    ]);
+
+                    if($_usertable) { // if user record created successfully
+                       $user_rank = User_rank::create([
+                            'myid' => $myId,
+                            'email' => $email,
+                            'superior_id' => $superior_id,
+                            'status' => 'paid',
+                        ]);
+
+                        // create the user information on the stage / payment table
+                        $stages_payment = Stages_payment::create(['user_id' => $myId]);
+
+                        if($user_rank && $stages_payment) {
+                            header("Location: reg_success.php");
+                        }
+                        else {
                             $top_error = "Error occur during registration";
-                        } 
-                        //$top_success = "Registration successful.";
-                    } else {
+                        }
+                    }
+                    else {
                         $top_error = "Error occur during registration 2";
                     }
-                } else {
-                    $error = true;
-                    $top_error = "Payment Transaction not successful."; 
-                }
-            } else {
-                $error = true; 
-                $top_error = "The payer does not have sufficient balance to complete this tansaction."; 
-            }
 
-        } else {
-            $error = true; 
-            $top_error = "The payer password or payer tansaction password in incorrect."; 
-        }        
+                }
+                else {
+                    $error = true;
+                    $top_error = "Payment Transaction not successful.";
+                }
+            }
+            else {
+                $error = true;
+                $top_error = "The payer does not have sufficient balance to complete this tansaction.";
+            }
+        }
+        else {
+            $error = true;
+            $top_error = "The payer password or payer tansaction password in incorrect.";
+        }
+
     }
     else {
         $top_error = "Fill all the required fields";

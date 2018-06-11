@@ -29,10 +29,9 @@ class TranversalTree
     public function DisplayTranversalTree($id)
     {
         $tranversalTree = "";
-        $myStage = 1;
         $user = new UserClass();
 
-        $getTranversalTree = function($computed) use ( $myStage, &$getTranversalTree ) {
+        $getTranversalTree = function($computed, $myStage) use ( &$getTranversalTree ) {
             $user = new UserClass();
             $childTranversalTree = "";
 
@@ -43,28 +42,28 @@ class TranversalTree
 
             foreach ($computed as $key => $value) {
 
-                if($value['children'] != false){
-                    
-                    if($value['id'] != '__'){
+                if($value['children'] != null){
+
+                    if($value['id'] != '__' && !($myStage < $value['stage'])){
                         $childTranversalTree .= '<li>';
                         $childTranversalTree .= "<img width='40px' height='40px' src='assets/img/stage".$myStage.".png'><br />";
                         $childTranversalTree .= $user->getFullname($value['id']);
-                        $childTranversalTree .= $getTranversalTree($value['children']);
+                        $childTranversalTree .= $getTranversalTree($value['children'], $myStage);
                         $childTranversalTree .= '</li>';
                     }
                     else {
                         $childTranversalTree .= '<li>';
                         $childTranversalTree .= "<img width='40px' height='40px' src='assets/img/stage0.png'><br />";
-                        $childTranversalTree .= $getTranversalTree($value['children']);
+                        $childTranversalTree .= $getTranversalTree($value['children'], $myStage);
                         $childTranversalTree .= '</li>';
                     }
                     
                 }
-                else{
-                    $childTranversalTree .= '<li>';
-                    $childTranversalTree .= "<img width='40px' height='40px' src='assets/img/stage0.png'><br />";
-                    $childTranversalTree .= '</li>';
-                }
+//                else{
+//                    $childTranversalTree .= '<li>';
+//                    $childTranversalTree .= "<img width='40px' height='40px' src='assets/img/stage0.png'><br />";
+//                    $childTranversalTree .= '</li>';
+//                }
             }
 
             if ($childTranversalTree !== "") {
@@ -74,22 +73,47 @@ class TranversalTree
         };
         
 
+        $myStage = $userStage = UserClass::getStage($id) || 1; // get user stage
         $tranversalTree = '<ul>';
         $tranversalTree .= '<li>';
         $tranversalTree .= "<img width='40px' height='40px' src='assets/img/stage".$myStage.".png'><br />";
         $tranversalTree .= $user->getFullname($id);
-        $tranversalTree .= $getTranversalTree(TranversalTree::compute($id));
+        $tranversalTree .= $getTranversalTree(TranversalTree::computeTree($id), $myStage);
         $tranversalTree .= '</li></ul>';
         
         return $tranversalTree;
     }
 
-    public function compute($userId) {
+    public function computeTree($userId) {
         $ref = new Referred();
         $depth = 0;
+        $maxDepth = 0; // initializing depth
+        
+        
+        // get the user's level to know the dept of the graph tree to draw
+        // if the user is in stage 1 or 5 the max depth is 2
+        // and if the users is in stage 2, 3, or 4, the max depth is 5
+//        $userStage = UserClass::getStage($userId);
+        $userStage = '3';
+
+        Switch($userStage){
+            case '1':
+            case '5':
+                $maxDepth = 2;
+                break;
+            case '2':
+            case '3':
+            case '4':
+                $maxDepth = 5;
+                break;
+            default:
+                $maxDepth = 2;
+                break;
+        }
+
         $downLinkArray = $ref->getDirectDownLink($userId); // get user 2 immediate downlink
 
-        return TranversalTree::DownLinkArray($downLinkArray, $depth);
+        return TranversalTree::DownLinkArray($downLinkArray, $depth, $maxDepth);
     }
 
     /**
@@ -100,20 +124,32 @@ class TranversalTree
      *
      * @return Array return the array of the object containing name and id of the referred
      */
-    public function DownLinkArray($children, $depth) {
-      if($depth == 5) return false;
+    public function DownLinkArray($children, $presentDepth, $maxDepth) {
+        if($presentDepth == $maxDepth) {
+            return [[
+                'id' => $children[0],
+                'stage' => ($children[0] != '__') ? UserClass::getStage($children[0]) : 0, // assign to empty users a stage of 0
+                'children' => null
+            ],[
+                'id' => $children[1],
+                'stage' => ($children[1] != '__') ? UserClass::getStage($children[1]) : 0, // assign to empty users a stage of 0
+                'children' => null
+            ]];
+        }
 
-      $depth += 1;
+        $presentDepth += 1;
 
-      // get downlinks
-        $rightDownLinks =  TranversalTree::DownLinkArray(TranversalTree::rightSide($children[0]), $depth);
-        $leftDownLinks =  TranversalTree::DownLinkArray(TranversalTree::rightSide($children[1]), $depth);
+      // get the right and left downlinks
+        $rightDownLinks =  TranversalTree::DownLinkArray(TranversalTree::rightSide($children[0]), $presentDepth, $maxDepth);
+        $leftDownLinks =  TranversalTree::DownLinkArray(TranversalTree::rightSide($children[1]), $presentDepth, $maxDepth);
 
         return [[
-                'id' => $children[0],
-                'children' => $rightDownLinks
+                    'id' => $children[0],
+                    'stage' => ($children[0] != '__') ? UserClass::getStage($children[0]) : 0,
+                    'children' => $rightDownLinks
                 ],[
                     'id' => $children[1],
+                    'stage' => ($children[1] != '__') ? UserClass::getStage($children[1]) : 0,
                     'children' => $leftDownLinks
                 ]];
     }
