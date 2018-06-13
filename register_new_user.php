@@ -193,7 +193,7 @@ if (isset($_POST['register'])) {
                         //add 8 dollars to referer account
                         $balance = $row2['balance'] - $referer_bonus;
                         $sql = "UPDATE user_rank SET balance='$balance' WHERE myid='$referer_id'";
-                        mysqli_query($dbc, $sql)
+                        mysqli_query($dbc, $sql);
 
                         //update history tables
                         $sql = "INSERT INTO income_history (userName, firstName, lastName, gender, occupation, dob, country, address, city, state, zipcode, phoneNo, email, password, myid, superior_id) 
@@ -381,7 +381,26 @@ if (isset($_POST['register'])) {
                     <br/>
                     <label class="col-md-12" id="referer_msg" style="color: rgba(46,148,15,0.99); font-weight: bold"></label>
                     <label class="col-md-12 referer_error" style="color: red; font-weight: bold; display: none">Username does not exist</label>
-                
+
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-10"><h3>Superior User</h3></label>
+                    <label class="control-label col-md-10"><small style=""><strong>Please enter your Superior Username</strong></small></label>
+                    <div class="col-md-11">
+                        <input type="text" required="required" name="superior_user" id="superior_user" class="form-control"
+                               placeholder="Enter Superior Username" maxlength="50" value="">
+                    </div>
+                    <div class="col-md-1" style="padding-top: 10px; padding-left: 0px">
+                        <span id="superior_success" class="glyphicon glyphicon-ok success" style="color: rgba(46,148,15,0.99); display: none"></span>
+                        <span class="glyphicon glyphicon-remove superior_error" style="color: red; display: none;"></span>
+                    </div>
+                    <label class="error_msg"><?php echo $error_superior_username ?></label>
+                </div>
+                <div class="form-group">
+                    <br/>
+                    <label class="col-md-12" id="superior_msg" style="color: rgba(46,148,15,0.99); font-weight: bold"></label>
+                    <label class="col-md-12 superior_error" style="color: red; font-weight: bold; display: none">Username does not exist</label>
+
                 </div>
                 <br><br><br>
                 <div class="form-group text-center" style="margin-top: 20px;">
@@ -1017,6 +1036,7 @@ $('div.setup-panel div a.btn-success').trigger('click');
                 });
                 }
             }, 500));
+
 
             $('#email').on('keyup', debounce(function() {
                 let username = $('#email').val();

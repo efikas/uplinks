@@ -1,5 +1,41 @@
 <?php
 
+$firstname = '';
+$error_firstName = '';
+$lastname = '';
+$error_lastname = '';
+$address = '';
+$error_address = '';
+$country = '';
+$error_country = '';
+$state = '';
+$error_state = '';
+$city = '';
+$error_city = '';
+$phone = '';
+$error_phone = '';
+$dob = '';
+$error_dob = '';
+$gender = '';
+$error_gender = '';
+$superior_id = '';  // this is the id of the parent of the registering user
+$error_superior_id = '';
+// $occupation = htmlspecialchars(strip_tags(trim($_POST['occupation'])));
+$username = '';
+$error_username = '';
+$email = '';
+$error_email = '';
+$pass = '';
+$error_pass = '';
+$pass2 = '';
+$error_pass2 = '';
+$tran_pass = '';
+$tran_pass2 = '';
+$payer_username = '';
+$payer_pass = '';
+$payer_tran_pass = '';
+$error_payer_tran_pass = '';
+
 if (isset($_POST['register'])) {
 
     /**
@@ -8,8 +44,10 @@ if (isset($_POST['register'])) {
      */
 
     require_once 'app/init.php';
+    require_once 'includes/Payer.php';
 
     $user = new User();
+    $payer = new Payer();
 
     //declarations
     $registration_charge = 40;
@@ -201,7 +239,7 @@ if (isset($_POST['register'])) {
         
 
     if (!$error) {
-        //get the balance of the payer and confirm if its greater than $40
+        //confirmed the payer informations
         $res = User::where('userName', $payer_username)->first();
 
         if($res && $res->password == hash('sha256', $payer_pass) && $res->t_password == hash('sha256', $payer_tran_pass)) {
@@ -210,12 +248,12 @@ if (isset($_POST['register'])) {
             $payer_id = $res->myid;
 
             // check if the payer has enough balance to pay for the registration
-            $payer = User_rank::where('myid', $payer_id)->first();
+            $hasEnoughCash = $payer->userRegFinancialStatus($payer_id);
 
-            if($payer && $payer->balance >= $registration_charge) {
-                // deduct 40 dollars from the payer's balance
-                $balance = $payer->balance - $registration_charge;
-                $payed = User_rank::where('myid', $payer)->update(['balance' => $balance]);
+            if($hasEnoughCash) {
+
+                // Make registration payment
+                $payed = $payer->payRegistration($payer_id);
 
                 if($payed) { //if payment successful
                     //register new user
@@ -244,6 +282,20 @@ if (isset($_POST['register'])) {
                             'email' => $email,
                             'password' => $password,
                     ]);
+
+                    // attach the user id to the referrer ar a reffered
+
+                    $refferedIds = ['desc_1', 'desc_2', 'desc_3', 'desc_4', 'desc_5', 'desc_6'];
+                    $_user = User_rank::where('myid', $referer_id)->first();
+
+                    for($i = 0; $i < sizeof($refferedIds); $i++){
+                         // get the first column of there reffered memebers that is null, and insert the user id in it
+                        if($_user[$refferedIds[$i]] == null){
+                            User_rank::where('myid', $referer_id)->update([$refferedIds[$i] => $myId]);
+                            break;
+                        }
+                    }
+
 
                     if($_usertable) { // if user record created successfully
                        $user_rank = User_rank::create([
@@ -288,8 +340,6 @@ if (isset($_POST['register'])) {
         $top_error = "Fill all the required fields";
     }
 
-    // close connection
-    mysqli_close($dbc);
 }
 ?>
 
@@ -477,6 +527,25 @@ if (isset($_POST['register'])) {
                             <label class="col-md-12 referer_error" style="color: red; font-weight: bold; display: none">Username does not exist</label>
                         
                         </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-10"><h3>Superior User</h3></label>
+                            <label class="control-label col-md-10"><small style=""><strong>Please enter your Superior Username</strong></small></label>
+                            <div class="col-md-11">
+                                <input type="text" required="required" name="superior_id" id="superior_id" class="form-control"
+                                       placeholder="Enter Superior Username" maxlength="50" value="">
+                            </div>
+                            <div class="col-md-1" style="padding-top: 10px; padding-left: 0px">
+                                <span id="superior_success" class="glyphicon glyphicon-ok success" style="color: rgba(46,148,15,0.99); display: none"></span>
+                                <span class="glyphicon glyphicon-remove superior_error" style="color: red; display: none;"></span>
+                            </div>
+                            <label class="error_msg"><?php echo $error_superior_id ?></label>
+                        </div>
+                        <div class="form-group">
+                            <br/>
+                            <label class="col-md-12" id="superior_msg" style="color: rgba(46,148,15,0.99); font-weight: bold"></label>
+                            <label class="col-md-12 superior_error" style="color: red; font-weight: bold; display: none">Username does not exist</label>
+
+                        </div>
                         <br><br><br>
                         <div class="form-group text-center" style="margin-top: 20px;">
                             <button class="btn btn-primary prevBtn pull-left disabled" type="button">Prev</button>
@@ -495,9 +564,9 @@ if (isset($_POST['register'])) {
                         <label for="firstname" class="col-md-12 control-label">First Name</label>
                         <div class="col-md-12">
                             <input name="firstname" required="required" id="firstname" class="form-control"
-                                    placeholder="Enter First Name" maxlength="50" value="<?=$firstname ?>" type="text">
+                                    placeholder="Enter First Name" maxlength="50" value="<?=($firstname) ? $firstname : "" ?>" type="text">
                         </div>
-                        <label class="error_msg text-left"><?php echo $error_firstName ?></label>
+                        <label class="error_msg text-left"><?php echo ($error_firstName) ? $error_firstName : "" ?></label>
                     </div><br><br>
                     <div class="form-group ">
                         <label for="lastname" class="col-md-12 control-label">Last Name</label>
@@ -505,7 +574,7 @@ if (isset($_POST['register'])) {
                             <input name="lastname" required="required" id="lastname" class="form-control"
                                     placeholder="Enter Last Name" maxlength="50" value="<?=$lastname ?>" type="text">
                         </div>
-                        <label class="error_msg text-left"><?php echo $error_lastname ?></label>
+                        <label class="error_msg text-left"><?php echo $error_lastname || "" ?></label>
                     </div><br><br>
                     <div class="form-group">
                         <label for="address" class="col-md-12 control-label">Address</label>
@@ -513,7 +582,7 @@ if (isset($_POST['register'])) {
                             <textarea name="address" required="required" id="address" class="form-control" placeholder="Enter Address"
                                     maxlength="200" value="<?=$address ?>"></textarea>
                         </div>
-                        <label class="error_msg"><?php echo $error_address ?></label>
+                        <label class="error_msg"><?php echo $error_address || "" ?></label>
                     </div><br><br><br><br>
                     <div>
                     <div class="form-group col-md-4">
@@ -1219,6 +1288,23 @@ $('div.setup-panel div a.btn-success').trigger('click');
                     $('.tran_pass2_error').show();
                 }
                 
+            }, 500));
+
+            $('#superior_id').on('keyup', debounce(function() {
+                let username = $('#superior_id').val();
+                if(username != ''){
+                    $.post("includes/getuser.php", { username: username}, function(data){
+                        if(data == 0){
+                            $('#superior_success').html('');
+                            $('.superior_error').show();
+                        }
+                        else{
+                            $('#superior_success').html('Success User exists: ' + data);
+                            $('.superior_error').hide();
+                        }
+
+                    });
+                }
             }, 500));
 
 
