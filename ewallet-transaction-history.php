@@ -11,7 +11,6 @@ if (isset($_POST['userN'])) {
     
     $row = mysqli_fetch_all($query);
     $total = mysqli_num_rows($query);
-    echo 'a';
 
 } elseif ($_POST['from'] != '' && $_POST['to'] != '' ) {
     $from = date('Y-m-d H:i:s', strtotime(trim($_POST['from'])));
@@ -24,7 +23,6 @@ if (isset($_POST['userN'])) {
     $query = mysqli_query($dbc, "SELECT * FROM wallet_history WHERE receiver_id='$myid' OR sender_id='$myid' AND Date between '$from' AND '$to' order by date desc");
     $row = mysqli_fetch_all($query);
     $total = mysqli_num_rows($query);
-    echo 'b';
 } else {
 
     if(isset($_GET['page'])){

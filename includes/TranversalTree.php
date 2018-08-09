@@ -26,7 +26,7 @@ class TranversalTree
      *
      * @return the TranversalTree markup
      */
-    public function DisplayTranversalTree($id)
+    public function DisplayTranversalTree($id, $stage = null)
     {
         $tranversalTree = "";
         $user = new UserClass();
@@ -73,18 +73,18 @@ class TranversalTree
         };
         
 
-        $myStage = $userStage = UserClass::getStage($id) || 1; // get user stage
+        $myStage = ($stage) ? $stage : $userStage = UserClass::getStage($id) || 1; // get user stage
         $tranversalTree = '<ul>';
         $tranversalTree .= '<li>';
         $tranversalTree .= "<img width='40px' height='40px' src='assets/img/stage".$myStage.".png'><br />";
         $tranversalTree .= $user->getFullname($id);
-        $tranversalTree .= $getTranversalTree(TranversalTree::computeTree($id), $myStage);
+        $tranversalTree .= $getTranversalTree(TranversalTree::computeTree($id, $myStage), $myStage);
         $tranversalTree .= '</li></ul>';
         
         return $tranversalTree;
     }
 
-    public function computeTree($userId) {
+    public function computeTree($userId, $myStage) {
         $ref = new Referred();
         $depth = 0;
         $maxDepth = 0; // initializing depth
@@ -94,7 +94,7 @@ class TranversalTree
         // if the user is in stage 1 or 5 the max depth is 2
         // and if the users is in stage 2, 3, or 4, the max depth is 5
 //        $userStage = UserClass::getStage($userId);
-        $userStage = '3';
+        $userStage = $myStage;
 
         Switch($userStage){
             case '1':
@@ -111,7 +111,8 @@ class TranversalTree
                 break;
         }
 
-        $downLinkArray = $ref->getDirectDownLink($userId); // get user 2 immediate downlink
+        //Uses the right to get the children of the user
+        $downLinkArray = TranversalTree::rightSide($userId); // get user 2 immediate downlink
 
         return TranversalTree::DownLinkArray($downLinkArray, $depth, $maxDepth);
     }

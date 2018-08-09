@@ -34,6 +34,7 @@ else {
     $user = User::where('email', $username)->first();
 //    dd($tree->compute($user->myid));
     $userTree = $tree->DisplayTranversalTree($user->myid);
+    $userStage = UserClass::getStage($user->myid);
 }
 ?>
 <!DOCTYPE html>
@@ -64,8 +65,16 @@ else {
 <tr><td>Search a downline member : <input name="userN" type="text"/>&nbsp;&nbsp;<input type="submit" name="submit" value="Search"></td></tr>
 </table>
 </form>
-<div class="tree text-center" style="overflow: visible; width: 2000px !important">
-<?php echo $userTree ?>
+<?php
+    if($userStage == 1 || $userStage == 5 ){
+?>
+    <div class="tree text-center" style="overflow: visible; padding-left: 400px !important">
+<?php }else{ ?>
+    <div class="tree text-center" style="overflow: visible; width: 2000px !important">
+<?php
+}
+    echo $userTree
+?>
 </div>
 
 <!--<div style="margin-top: 150px; height:5px; background-color: #1f77b4"></div>-->

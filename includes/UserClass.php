@@ -37,4 +37,15 @@ class UserClass
         return '';
 
     }
+
+    public function getUserId($username)
+    {
+        // $user = new User();
+        $user = User::where('userName', $username)->first();
+        if ($user) {
+            return $user->myid;
+        }
+        return null;
+
+    }
 }

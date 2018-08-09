@@ -24,9 +24,25 @@ if(isset($_GET['page'])){
 }else{
     $page = 1;
 }
-$query=mysqli_query($dbc,"SELECT * FROM `user_table`");
-$pagerow = mysqli_fetch_array($query);
-$total = mysqli_num_rows($query);
+
+if ($_POST['from'] != '' && $_POST['to'] != '' ) {
+    $from = date('Y-m-d H:i:s', strtotime(trim($_POST['from'])));
+    // $from = $from->format('Y-m-d H:i:s');
+    $to = date('Y-m-d H:i:s', strtotime(trim($_POST['to'])));
+    // $to = $to->format('Y-m-d H:i:s');
+    $from = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $from)));
+    $to = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $to)));
+    //$query= mysqli_query($dbc,"SELECT * FROM wallet_history WHERE receiver_id='$ref_id' OR sender_id='$ref_id' OR receiver_id='$ref_id' OR sender_id='$ref_id' order by id desc");
+    $query = mysqli_query($dbc, "SELECT * FROM user_table WHERE added between '$from' AND '$to' order by added desc");
+    $pagerow = mysqli_fetch_all($query);
+    $total = mysqli_num_rows($query);
+}
+else {
+    $query=mysqli_query($dbc,"SELECT * FROM `user_table`");
+    $pagerow = mysqli_fetch_array($query);
+    $total = mysqli_num_rows($query);
+}
+
 $itemsperpage = 10;
 
 if(isset($_POST['itemsperpage'])){
@@ -74,7 +90,38 @@ $totalpages = max(ceil($total/$itemsperpage),1);
                 <div class="panel-body">
 
 
-                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_0_length"> <form id="maxdisplay" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off"><label>Show <select  id="itemsperpage" onchange="getState(this.value)"  name="itemsperpage" aria-controls="DataTables_Table_0" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div> </form> <form id="search" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off"> <div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Search:<input name="userN" type="text"></input> </label></div></form>
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer">
+                        <div class="dataTables_length" id="DataTables_Table_0_length">
+                            <form id="maxdisplay" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off">
+                                <label>Show
+                                    <select  id="itemsperpage" onchange="getState(this.value)"  name="itemsperpage" aria-controls="DataTables_Table_0" class="">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select> entries</label></div>
+                        </form>
+                        <form id="search" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off">
+                            <div id="DataTables_Table_0_filter" class="dataTables_filter">
+                                <label>Search:<input name="userN" type="text" /> </label>
+                            </div>
+                        </form>
+
+                        <form id="datesearch" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off">
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3">
+                                    <br/>
+
+                                    <div class="input-group input-daterange">
+                                        <div class="input-group-addon">from</div>
+                                        <input type="text" class="form-control" name="from" id="fromperiod" value="<?=$_POST['from'] ?>">
+                                        <div class="input-group-addon">to</div>
+                                        <input type="text" id="toperiod" name="to" class="form-control" value="<?=$_POST['to'] ?>">
+                                    </div>
+                                    <br/>
+                                </div>
+                            </div>
+                        </form>
                   <table class="table datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                     <thead>
                       <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 30px;" aria-sort="ascending" aria-label="#: activate to sort column descending">#</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 175px;" aria-label="User Id: activate to sort column ascending">User Id</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 125px;" aria-label="UserName: activate to sort column ascending">UserName</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 130px;" aria-label="Full Name: activate to sort column ascending">Full Name</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 134px;" aria-label="Status: activate to sort column ascending">Status</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 175px;" aria-label="Contact No.: activate to sort column ascending">Contact No.</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 155px;" aria-label="Register Date: activate to sort column ascending">Register Date</th><th>Action</th></tr>
@@ -143,8 +190,15 @@ $totalpages = max(ceil($total/$itemsperpage),1);
                      
             	          <?php
                             $me= $userRow['email'];
-                            $query=mysqli_query($dbc,"SELECT * FROM `user_table` LIMIT ".(($page-1)*$itemsperpage).','.$itemsperpage);
-                            $i= 1;
+
+                            // execute query when the filter is executed
+                            if ($_POST['from'] != '' && $_POST['to'] != '' ) {
+                                $query = mysqli_query($dbc, "SELECT * FROM user_table WHERE added between '$from' AND '$to' order by added desc");
+                            }
+                            else{
+                                $query = mysqli_query($dbc, "SELECT * FROM `user_table` LIMIT " . (($page - 1) * $itemsperpage) . ',' . $itemsperpage);
+                            }
+                                $i= 1;
                           $start_count = ($page-1)*$itemsperpage;
                             while ($row = mysqli_fetch_array($query)) {
                                 $ref_userid[$i] =  $row['myid']; 
@@ -252,10 +306,65 @@ $totalpages = max(ceil($total/$itemsperpage),1);
 
 
         </div> <!-- / container-fluid -->
+    <link href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
     <script type="text/javascript">
+        // $(document).ready(function() {
+
+            function debounce(func, wait, immediate) {
+                var timeout;
+                return function() {
+                    var context = this, args = arguments;
+                    var later = function() {
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
+                    };
+                    var callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) func.apply(context, args);
+                };
+            };
+
+            //check if user transaction history
+            var getHistory = debounce(function() {
+                let from = $('#fromperiod').val();
+                let to = $('#toperiod').val();
+                if(from != '' && to != ''){
+                    $.post("includes/transaction_search.php", { from: from, to: to }, function(data){
+                        alert(data)
+
+                    });
+                }
+            }, 500);
+
+
+            $("#fromperiod").datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 1,
+                onClose: function (selectedDate) {
+
+                    //   $("#toperiod").datepicker("option", "minDate", selectedDate);
+                }
+            });
+            $("#toperiod").datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 1,
+                onClose: function (selectedDate) {
+                    //   $("#fromperiod").datepicker("option", "maxDate", selectedDate);
+                    //update search table
+                    document.getElementById("datesearch").submit()
+                }
+            });
+        // })
 
         function getState(city_id)
         {
+
 
             document.getElementById('maxdisplay').submit()
         }

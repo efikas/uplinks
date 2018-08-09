@@ -4,19 +4,17 @@
 
 
     require_once 'app/init.php';
-    require_once 'includes/Tree.php';
+//    require_once 'includes/Tree.php';
+    require_once 'includes/TranversalTree.php';
 
     $user = new User();
-    $tree = new Tree();
+//    $tree = new Tree();
+    $tree = new TranversalTree();
 
 
     $username = $_SESSION['user'];
     $user = User::where('email', $username)->first();
 
-    //  $user2 = User_rank::where('myid', $user->myid)->first();
-    //  dd($user2);
-
-    //   dd($_SESSION['user']);
 
     if(isset($_POST['submit'])){
         //get the id of the user name
@@ -26,7 +24,7 @@
         //check if id exist in downlink of user
         if(sizeof($searchId) > 0){
             if(in_array($searchId[0], $tree->DownLinkArray($user->myid))){
-                $userTree = $tree->DisplayTree($searchId[0]);
+                $userTree = $tree->DisplayTranversalTree($searchId[0]);
             }
             else {
                 $userTree= "Username name does not exist in your downlink";
@@ -40,7 +38,7 @@
     }
     else {
     //        dd($tree->DownLinkArray($user->myid));
-        $userTree = $tree->DisplayTree($user->myid);
+        $userTree = $tree->DisplayTranversalTree($user->myid, 1);
     }
 
 ?>
@@ -80,7 +78,7 @@
                         </div>
                         
                     </div>
-            <div class="tree" style="margin-left: 10%; height:500px;">
+            <div class="tree" style="padding-left: 300px; height:500px;">
                 <?php echo $userTree ?>
             
             </div>
