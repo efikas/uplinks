@@ -7,7 +7,6 @@ if (isset($_POST['register'])) {
 
     // prevent sql injections/ clear user invalid inputs
     $referer = htmlspecialchars(strip_tags(trim($_POST['ref_username'])));
-    
 
     $firstname = htmlspecialchars(strip_tags(trim($_POST['firstname'])));
     $lastname = htmlspecialchars(strip_tags(trim($_POST['lastname'])));
@@ -22,18 +21,17 @@ if (isset($_POST['register'])) {
     $gender = htmlspecialchars(strip_tags(trim($_POST['gender'])));
     // $superior_id = htmlspecialchars(strip_tags(trim($_POST['superior_id'])));
     // $occupation = htmlspecialchars(strip_tags(trim($_POST['occupation'])));
-    
+
     $username = htmlspecialchars(strip_tags(trim($_POST['username'])));
     $email = htmlspecialchars(strip_tags(trim($_POST['email'])));
     $pass = htmlspecialchars(strip_tags(trim($_POST['pass'])));
     $pass2 = htmlspecialchars(strip_tags(trim($_POST['pass2'])));
     $tran_pass = htmlspecialchars(strip_tags(trim($_POST['tran_pass'])));
     $tran_pass2 = htmlspecialchars(strip_tags(trim($_POST['tran_pass2'])));
-    
+
     $payer_username = htmlspecialchars(strip_tags(trim($_POST['payer_username'])));
     $payer_pass = htmlspecialchars(strip_tags(trim($_POST['payer_pass'])));
     $payer_tran_pass = htmlspecialchars(strip_tags(trim($_POST['payer_tran_pass'])));
-    
 
     // $bankname = htmlspecialchars(strip_tags(trim($_POST['bankname'])));
     // $accname = htmlspecialchars(strip_tags(trim($_POST['accname'])));
@@ -43,9 +41,9 @@ if (isset($_POST['register'])) {
     //checking for errors
     require_once 'dbconnect.php';
 
-    if (empty($referer)) { 
-        $error = true; 
-        $error_referer = "Please enter your referer username."; 
+    if (empty($referer)) {
+        $error = true;
+        $error_referer = "Please enter your referer username.";
     } else {
         $res = mysqli_query($dbc, "SELECT * FROM user_table WHERE userName='$referer'");
         $row = mysqli_fetch_array($res);
@@ -54,44 +52,53 @@ if (isset($_POST['register'])) {
         if ($count == 1) {
             $referer_id = $row['myid'];
         } else {
-            $error = true; $error_referer = "Please enter a correct referer id.";
+            $error = true;
+            $error_referer = "Please enter a correct referer id.";
         }
     }
 
-    if (empty($firstname)) { 
-        $error = true; 
-        $error_firstName = "Please enter your Firstname."; 
+    if (empty($firstname)) {
+        $error = true;
+        $error_firstName = "Please enter your Firstname.";
     }
-    if (empty($lastname)) { 
-        $error = true; $error_lastname = "Please enter your Lastname."; 
+    if (empty($lastname)) {
+        $error = true;
+        $error_lastname = "Please enter your Lastname.";
     }
-    if (empty($address)) { 
-        $error = true; $error_address = "Please enter your Address."; 
+    if (empty($address)) {
+        $error = true;
+        $error_address = "Please enter your Address.";
     }
-    if ($country == "") { 
-        $error = true; $error_country = "Please enter your Country."; 
+    if ($country == "") {
+        $error = true;
+        $error_country = "Please enter your Country.";
     }
-    if (empty($city)) { 
-        $error = true; $error_city = "Please enter your City."; 
+    if (empty($city)) {
+        $error = true;
+        $error_city = "Please enter your City.";
     }
-    if (empty($state)) { 
-        $error = true; $error_state = "Please enter your State."; 
+    if (empty($state)) {
+        $error = true;
+        $error_state = "Please enter your State.";
     }
-    if ($gender == "") { 
-        $error = true; $error_gender = "Please enter your Gender."; 
+    if ($gender == "") {
+        $error = true;
+        $error_gender = "Please enter your Gender.";
     }
 
-    if (empty($phone)) { 
-        $error = true; $error_phone = "Please enter your Phone Number."; 
+    if (empty($phone)) {
+        $error = true;
+        $error_phone = "Please enter your Phone Number.";
     }
-    
-    if (empty($dob)) { 
-        $error = true; $error_dob = "Please enter your Date of Birth."; 
+
+    if (empty($dob)) {
+        $error = true;
+        $error_dob = "Please enter your Date of Birth.";
     }
 
     // if (empty($superior_id)) {
     //     $error = true; $error_superior_id = "Please enter your referer id.";
-    // } 
+    // }
     // else {
     //     $res = mysqli_query($dbc, "SELECT * FROM user_table WHERE userName='$ref_username'");
     //     $row = mysqli_fetch_array($res);
@@ -104,18 +111,21 @@ if (isset($_POST['register'])) {
     //     }
     // }
 
-    
-    if (empty($username)) { 
-        $error = true; $error_username = "Please enter your Username."; 
+    if (empty($username)) {
+        $error = true;
+        $error_username = "Please enter your Username.";
     }
-    if (empty($email)) { 
-        $error = true; $error_email = "Please enter your Email."; 
+    if (empty($email)) {
+        $error = true;
+        $error_email = "Please enter your Email.";
     }
-    if (empty($pass)) { 
-        $error = true; $error_pass = "Please enter your password."; 
+    if (empty($pass)) {
+        $error = true;
+        $error_pass = "Please enter your password.";
     }
-    if (empty($pass2)) { 
-        $error = true; $error_pass2 = "Please enter the confirmation password."; 
+    if (empty($pass2)) {
+        $error = true;
+        $error_pass2 = "Please enter the confirmation password.";
     }
 
     if (!empty($pass) && !empty($pass2) && $pass != $pass2) {
@@ -123,11 +133,13 @@ if (isset($_POST['register'])) {
         $error_pass2 = "Please re enter your the same password.";
     }
 
-    if (empty($tran_pass)) { 
-        $error = true; $error_tran_pass = "Please enter your transaction password."; 
+    if (empty($tran_pass)) {
+        $error = true;
+        $error_tran_pass = "Please enter your transaction password.";
     }
-    if (empty($tran_pass2)) { 
-        $error = true; $error_tran_pass2 = "Please enter the confirmation transaction password."; 
+    if (empty($tran_pass2)) {
+        $error = true;
+        $error_tran_pass2 = "Please enter the confirmation transaction password.";
     }
 
     if (!empty($tran_pass) && !empty($tran_pass2) && $tran_pass != $tran_pass2) {
@@ -135,32 +147,32 @@ if (isset($_POST['register'])) {
         $error_tran_pass2 = "Please re enter the same transaction password.";
     }
 
-
-    if (empty($payer_username)) { 
-        $error = true; $error_payer_username = "Please enter the Payer Username."; 
+    if (empty($payer_username)) {
+        $error = true;
+        $error_payer_username = "Please enter the Payer Username.";
     }
-    if (empty($payer_pass)) { 
-        $error = true; $error_payer_pass = "Please enter the Payer password."; 
-    }
-
-    if (empty($payer_tran_pass)) { 
-        $error = true; $error_payer_tran_pass = "Please enter the transaction Payer password."; 
+    if (empty($payer_pass)) {
+        $error = true;
+        $error_payer_pass = "Please enter the Payer password.";
     }
 
+    if (empty($payer_tran_pass)) {
+        $error = true;
+        $error_payer_tran_pass = "Please enter the transaction Payer password.";
+    }
 
-    // if (empty($bankname)) { 
-    //     $error = true; $error_bankname = "Please enter your Bank Name."; 
+    // if (empty($bankname)) {
+    //     $error = true; $error_bankname = "Please enter your Bank Name.";
     // }
-    // if (empty($accname)) { 
-    //     $error = true; $error_accname = "Please enter your Account Name."; 
+    // if (empty($accname)) {
+    //     $error = true; $error_accname = "Please enter your Account Name.";
     // }
-    // if (empty($accno)) { 
-    //     $error = true; $error_accno = "Please enter your Account Number."; 
+    // if (empty($accno)) {
+    //     $error = true; $error_accno = "Please enter your Account Number.";
     // }
-    // if (empty($ref_username)) { 
-    //     $error = true; $error_ref_username = "Please enter your Referer Username."; 
+    // if (empty($ref_username)) {
+    //     $error = true; $error_ref_username = "Please enter your Referer Username.";
     // }
-        
 
     if (!$error) {
         //get the balance of the payer and confirm if its greater than $40
@@ -175,7 +187,7 @@ if (isset($_POST['register'])) {
             $count2 = mysqli_num_rows($res); // if uname/pass correct it returns must be 1 row
             // echo mysqli_error($dbc);
 
-            if ($count2 == 1 && $row2['balance'] >= $registration_charge ) {
+            if ($count2 == 1 && $row2['balance'] >= $registration_charge) {
 
                 //deduct 40 dollars from the balance
                 $balance = $row2['balance'] - $registration_charge;
@@ -185,39 +197,38 @@ if (isset($_POST['register'])) {
                     //register new user
                     $password = hash('sha256', $pass);
                     $added = date("Y-m-d h:i:s a");
-                    $myId = uniqid(). '-' . uniqid();
+                    $myId = uniqid() . '-' . uniqid();
                     // $myId = uniqid(). '-' . md5(uniqid(mt_rand(), true).microtime(true));
 
-                    $sql = "INSERT INTO user_table (userName, firstName, lastName, gender, occupation, dob, country, address, city, state, zipcode, phoneNo, email, password, myid, superior_id) 
+                    $sql = "INSERT INTO user_table (userName, firstName, lastName, gender, occupation, dob, country, address, city, state, zipcode, phoneNo, email, password, myid, superior_id)
                             VALUES ('$username', '$firstname', '$lastname', '$gender', '$occupation', '$dob', '$country', '$address', '$city', '$state', '$zipcode', '$phone', '$email', '$password', '$myId', '$referer_id')";
-                     
+
                     if (mysqli_query($dbc, $sql)) {
                         //add to user_rank table
                         $sql2 = "INSERT INTO user_rank (email, myid, superior_id, status) VALUES ('$email', '$myId', '$referer_id', 'paid')";
-                        if (mysqli_query($dbc, $sql2)) {                            
+                        if (mysqli_query($dbc, $sql2)) {
                             $top_success = "Registration successful.";
                         } else {
                             $top_error = "Error occur during registration";
-                        } 
+                        }
                         //$top_success = "Registration successful.";
                     } else {
                         $top_error = "Error occur during registration 2";
                     }
                 } else {
                     $error = true;
-                    $top_error = "Payment Transaction not successful."; 
+                    $top_error = "Payment Transaction not successful.";
                 }
             } else {
-                $error = true; 
-                $top_error = "The payer does not have sufficient balance to complete this tansaction."; 
+                $error = true;
+                $top_error = "The payer does not have sufficient balance to complete this tansaction.";
             }
 
         } else {
-            $error = true; 
-            $top_error = "The payer password or payer tansaction password in incorrect."; 
-        }        
-    }
-    else {
+            $error = true;
+            $top_error = "The payer password or payer tansaction password in incorrect.";
+        }
+    } else {
         $top_error = "Fill all the required fields";
     }
 
@@ -319,7 +330,7 @@ if (isset($_POST['register'])) {
     background-color: #daa520 !important;
 }
 </style>
- 
+
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
     </head>
 
@@ -343,6 +354,6 @@ if (isset($_POST['register'])) {
         </div>
     </div>
     </div>
-   
+
 </body>
 </html>
