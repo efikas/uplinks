@@ -8,7 +8,7 @@
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class Stages_payment extends Eloquent
+class Stage_payment extends Eloquent
 {
     protected $table = 'stages_payment';
 

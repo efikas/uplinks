@@ -23,9 +23,7 @@ class UserClass
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
+    public function __construct(){}
 
     public function getFullName($id) {
         $user = User::where('myid', $id)->first();
@@ -58,7 +56,6 @@ class UserClass
             return $user->firstName . ' ' . $user->lastName;
         }
         return '0';
-
     }
 
     public function getUserId($username) {

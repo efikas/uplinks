@@ -17,7 +17,7 @@ class User extends Eloquent
     }
 
     public function stagesPayment(){
-        return $this->hasOne(Stages_payment::class, 'user_id', 'myid');
+        return $this->hasOne(Stage_payment::class, 'user_id', 'myid');
         // second parameter is **user_id** because that's the column name that represent foreign key inside user_rank table
         // third parameter is **id** because that's the column name for local key inside users table.
         // Second and third parameter can be omitted here because they will default to those values

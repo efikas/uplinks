@@ -13,11 +13,12 @@
  */
 
 require_once 'app/init.php';
-require_once './UserClass.php';
+require_once dirname(__DIR__) . '/includes/UserClass.php';
 
 class Payer
 {
-    const MASTER_ACCOUNT_ID = 'Admin1'; // the id of the super admin that receives and make payment
+    // the id of the super admin that receives and make payment
+    const MASTER_ACCOUNT_USERNAME = 'Admin1';
     public $registrationFee = 40; // $40 for registration
     public $refererFree = 8; // $8 payment for referring a new user
 
@@ -71,12 +72,14 @@ class Payer
             $response = User_rank::where('myid', $payerId)->update(['balance' => $balance]);
 
             if($response) {
+                $userClass = new UserClass();
+                $adminId = $userClass->getUserId(self::MASTER_ACCOUNT_NAME);
+
                 // pay the money to the master admin's account
-                $adminBalance = $this->getBalance(self::MASTER_ACCOUNT_ID) + $this->registrationFee;
-                $response = User_rank::where('myid', self::MASTER_ACCOUNT_ID)->update(['balance' => $adminBalance]);
+                $adminBalance = $this->getBalance($adminId) + $this->registrationFee;
+                $response = User_rank::where('myid', $adminId)->update(['balance' => $adminBalance]);
 
                 //todo:: log the payment
-                $adminId = $userClass->getUserId(self::MASTER_ACCOUNT_ID);
                 $this->logger($payerId, $adminId, $this->registrationFee, 'registration Fee');
 
                 // pay referrer
@@ -97,13 +100,17 @@ class Payer
      */
     public function payReferrer($referrerId) {
 
+        $userClass = new UserClass();
+        $adminId = $userClass->getUserId(self::MASTER_ACCOUNT_NAME);
+
         // pay referrer for referring the new user
         $balance = $this->getBalance($referrerId) + $this->refererFree;
         User_rank::where('myid', $referrerId)->update(['balance' => $balance]);
 
-        //todo:: log the payment
-        $userClass = new UserClass();
-        $adminId = $userClass->getUserId(self::MASTER_ACCOUNT_ID);
+        // remove from admin
+        $adminBalance = $this->getBalance($adminId) - $this->refererFree;
+        User_rank::where('myid', $adminId)->update(['balance' => $adminBalance]);
+
         $this->logger($adminId, $referrerId, $this->refererFree, 'Referrer Bonus');
     }
 
@@ -117,10 +124,6 @@ class Payer
      */
     public function transferFund($senderId, $receiverId, $amount) {
     }
-
-
-
-
 
     /**
      * Do the registration payment.
@@ -147,11 +150,20 @@ class Payer
     }
 
 
+    public function payBonus($userId, $amount, $description){
+        // pay user
+        $balance = $this->getBalance($userId) + $amount;
+        User_rank::where('myid', $userId)->update(['balance' => $balance]);
 
+        // todo:: log the payment
+        $userClass = new UserClass();
+        $adminId = $userClass->getUserId(self::MASTER_ACCOUNT_NAME);
 
+        // remove from admin
+        $adminBalance = $this->getBalance($adminId) - $this->amount;
+        User_rank::where('myid', $adminId)->update(['balance' => $adminBalance]);
 
-
-
-
-
+        
+        $this->logger($adminId, $referrerId, $this->refererFree, 'Referrer Bonus');
+    }
 }
