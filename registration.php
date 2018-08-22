@@ -35,6 +35,7 @@ if (isset($_POST['register'])) {
     require_once 'includes/Payer.php';
 
     $user = new User();
+    $userRank = new User_rank();
     $payer = new Payer();
 
     //declarations
@@ -246,6 +247,7 @@ if (isset($_POST['register'])) {
                 if($payed) { //if payment successful
                     //register new user
                     $password = hash('sha256', $pass);
+                    $t_password = hash('sha256', $tran_pass);
                     $added = date("Y-m-d h:i:s a");
 
                     // todo:: change the mode of the $myId to md5($username . $added)
@@ -269,8 +271,11 @@ if (isset($_POST['register'])) {
                             'phoneNo' => $phone,
                             'email' => $email,
                             'password' => $password,
+                            'status' => 'paid',
+                            't_password' => $t_password,
                     ]);
 
+                    
                     //credit the referrer and record the transaction log
 
                     // attach the user id to the referrer ar a reffered
@@ -901,15 +906,17 @@ if (isset($_POST['register'])) {
                                                         <label for="username" class="col-md-12 control-label">Username</label>
                                                         <div class="col-md-11">
                                                             <input name="payer_username" id="payer_username" class="form-control" placeholder="Enter Username"
-                                                                    maxlength="50" value="<?=$payer_username ?>" type="text">
+                                                                    maxlength="50" value="" type="text">
                                                         </div>
                                                         <div class="form-group" style="height: 10px !important">
-                                                            <label class="col-md-12" id="payer_success" style="color: rgba(46,148,15,0.99); font-weight: bold; display: none"></label>
+                                                            <label class="col-md-12" id="payer_success" style="color: rgba(46,148,15,0.99); font-weight: bold;"></label>
                                                             <label class="col-md-12 payer_error" style="color: red; font-weight: bold; display: none">This User does not exist</label>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <br/><br>2
+                                            </div>
+                                                <br/>
+                                            <div class="row">
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label for="pass" class="col-md-12 control-label">Password</label>
@@ -919,8 +926,9 @@ if (isset($_POST['register'])) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <br/><br>
-                                                <div class="col-md-12">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
                                                     <div class="form-group">
                                                         <label for="tran_pass" class="col-md-12 control-label">Transaction Password</label>
                                                         <div class="col-md-12">
@@ -1027,17 +1035,17 @@ $(document).ready(function () {
                 }
             }, 500);
 
-            $('#payer_user').on('keyup', debounce(function() {
-                let username = $('#payer_user').val();
+            $('#payer_username').on('keyup', debounce(function() {
+                let username = $('#payer_username').val();
                 if(username != ''){
                     $.post("includes/getuser.php", { username: username}, function(data){
                     if(data == 0){
                         $('#payer_success').html('');
-                        $('.referer_error').show();
+                        $('.payer_error').show();
                     }
                     else{
-                        $('#payer_success').html('Success User exists: ' + data);
-                        $('.referer_error').hide();
+                        $('#payer_success').html('Payer name: ' + data);
+                        $('.payer_error').hide();
                     }
 
                 });

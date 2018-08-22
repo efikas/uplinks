@@ -5,39 +5,37 @@
     if( isset($_POST['btn-approve']) ) {
         
         if($my_balance >= 40){
-        $newbalance = $my_balance - 40;
-    $ema = trim($_POST['email']);    
-    mysqli_query($dbc, "UPDATE user_table SET `status`= 'paid' WHERE email='$ema'");
-    mysqli_query($dbc, "UPDATE user_rank SET `status`= 'paid' WHERE email='$ema'");
-    
-    mysqli_query($dbc, "UPDATE user_rank SET  `balance`= '$newbalance' WHERE email='$ema'");
-        unset($ema);  
-    
-    }
+            $newbalance = $my_balance - 40;
+            $ema = trim($_POST['email']);    
+            mysqli_query($dbc, "UPDATE user_table SET `status`= 'paid' WHERE email='$ema'");
+            mysqli_query($dbc, "UPDATE user_rank SET `status`= 'paid' WHERE email='$ema'");
+            
+            mysqli_query($dbc, "UPDATE user_rank SET  `balance`= '$newbalance' WHERE email='$ema'");
+                unset($ema);  
+            
+        }
     }
     
     if( isset($_POST['btn-approve_me']) ) {
         
         if($my_balance >= 40){
-     
-        $newbalance = $my_balance - 40;
-    mysqli_query($dbc, "UPDATE user_table SET `status`= 'paid' WHERE email='$emai'");
-    mysqli_query($dbc, "UPDATE user_rank SET `status`= 'paid' WHERE email='$emai'");
-    mysqli_query($dbc, "UPDATE user_rank SET  `balance`= '$newbalance' WHERE email='$emai'");       
+            $newbalance = $my_balance - 40;
+            mysqli_query($dbc, "UPDATE user_table SET `status`= 'paid' WHERE email='$emai'");
+            mysqli_query($dbc, "UPDATE user_rank SET `status`= 'paid' WHERE email='$emai'");
+            mysqli_query($dbc, "UPDATE user_rank SET  `balance`= '$newbalance' WHERE email='$emai'");       
         }else{
-        
             $pay_error = "insufficient fund";
         }
         
-        }
+    }
     ?>
 <style>
 .green{color:green;}
  
 h3{
-font-size:1em;
-font-weight:bold;
-font-family:Arial, Helvetica, sans-serif;
+    font-size:1em;
+    font-weight:bold;
+    font-family:Arial, Helvetica, sans-serif;
 }
  
 </style>
@@ -74,10 +72,6 @@ font-family:Arial, Helvetica, sans-serif;
                         <div class="desc">Stage Name : Stage<?php echo $my_stage; echo '('.getstage_name($my_stage).')'; ?> </div>
                         <div class="desc">Balance : $<?php echo $my_balance; ?> </div>
                         <div class="desc">Stage Completed Date : <?php echo $my_dor; ?> </div>
-
-                      
-
-
                     </div>
                     <!--<div class="bottom">
                         <a class="btn btn-primary btn-twitter btn-sm" href="#"><i class="ti-twitter"></i></a>
@@ -105,32 +99,39 @@ font-family:Arial, Helvetica, sans-serif;
                 <div class="row">
                     <div class="col-md-14">
                         <div class="card">
-                            <div class="header">
+                            <div class="header text-success">
                                  <h3>The following people are directly under you:</h3>
-                                 <p>Kindly note that, for each member you register ,<br />
-                                  $40 will be deducted from your wallet</p>
+                                 <p>Kindly note that, for each member you register, $40 will be deducted from your wallet.</p>
                             </div>
                             <div class="content table-responsive table-full-width">
                             
                                 <table class="table table-striped">
                                     <thead>
-                                <tr><th>s.no</th><th>name</th><th>phone</th><th>date</th><th><div hidden class='noPrint'>action</div></th></tr>
+                                <tr>
+                                    <th>s.no</th>
+                                    <th>name</th>
+                                    <th>phone</th>
+                                    <th>date</th>
+                                    <th><div hidden class='noPrint'>action</div></th>
+                                </tr>
                             </thead>
-                                    <?php
+                            <?php
                             $me = $userRow['email'];
                             $myid = $userRow['myid'];
                             $query = "SELECT * FROM user_rank WHERE superior_id='$myid' ";
                             $query=mysqli_query($dbc, $query) or die('error selecting user');
-                            $i= 1;
+                            $i = 1;
                             while ($row = mysqli_fetch_array($query)) {
+                                if($i > 2) break;
+
                                 $under_meid[$i] =  $row['myid'];
-                             $quer=mysqli_query($dbc, "SELECT * FROM user_table WHERE myid='$under_meid[$i]'");
-                            $ron = mysqli_fetch_array($quer);
-                            $email[$i] =  $ron['email'];                               
-                            $pn[$i]= $ron['phoneNo']; 
-                            $nam[$i]= $ron['firstName'].' '.$ron['lastName'];
-                            $date[$i] =  $ron['added'];
-                            $status[$i] =  $ron['status'];
+                                $quer=mysqli_query($dbc, "SELECT * FROM user_table WHERE myid='$under_meid[$i]'");
+                                $ron = mysqli_fetch_array($quer);
+                                $email[$i] =  $ron['email'];                               
+                                $pn[$i]= $ron['phoneNo']; 
+                                $nam[$i]= $ron['firstName'].' '.$ron['lastName'];
+                                $date[$i] =  $ron['added'];
+                                $status[$i] =  $ron['status'];
                                
                               
                             ?>
@@ -152,11 +153,13 @@ font-family:Arial, Helvetica, sans-serif;
                                         <?php
                                 }
                                 else{ ?>
-                        <form hidden method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off">
-                                <div hidden  class="form-group">
-                               <input type="hidden" name="email" value="<?php echo $email[$i]; ?>" />
-                                <button style=" background-color: greenyellow;" type="submit" class="btn btn-block" name="btn-approve">Approve</button>
-                            </div> </form> <?php } ?>
+                                <form hidden method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off">
+                                    <div hidden  class="form-group">
+                                    <input type="hidden" name="email" value="<?php echo $email[$i]; ?>" />
+                                    <button style=" background-color: greenyellow;" type="submit" class="btn btn-block" name="btn-approve">Approve</button>
+                                    </div> 
+                                </form> 
+                            <?php } ?>
                             </td>
   
                             </tr>

@@ -220,7 +220,7 @@ if(!isset($_SESSION['user'])) {
 
     <!-- Fonts -->
 
-    <link rel="shortcut icon" href="dashboard_files/logo-inverse2.png" type="image/x-icon"/>
+    <link rel="shortcut icon" href="assets/img/logo/uplinkslogo_3D.png" type="image/x-icon"/>
     <link href="https://helpinghandsintl.biz/userpaneluser/css/fontello.css" rel="stylesheet">
     <link href="Font-Awesome/css/font-awesome.min.css" rel="stylesheet">
 

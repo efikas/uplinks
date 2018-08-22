@@ -1,5 +1,5 @@
 <?php
-namespace  Tree\Referred;
+// namespace  Referred;
 /**
  * Created by PhpStorm.
  * User: latyf
@@ -47,5 +47,24 @@ class Referred
         }
 
         return $referred;
+    }
+
+    /**
+     * Create a new contextual binding builder.
+     *
+     * @return Array return the array of the object containing name and id of the referred
+     */
+    public function getDirectDownLink($id) {
+        $directDownLink = [];
+        $userRank = User_rank::where('superior_id', $id)->get(['myid']);
+        $counter = 0;
+
+        foreach ($userRank as $value){
+            if($counter > 1) return $directDownLink;
+
+            array_push($directDownLink, $value->myid);
+            $counter++;
+        }
+        return $directDownLink;
     }
 }

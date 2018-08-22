@@ -1,5 +1,5 @@
 <?php
-namespace Tree\UserClass;
+// namespace Tree\UserClass;
 /**
  * Created by PhpStorm.
  * User: latyf
@@ -27,20 +27,41 @@ class UserClass
     {
     }
 
-    public function getFullName($id)
-    {
-        // $user = new User();
+    public function getFullName($id) {
         $user = User::where('myid', $id)->first();
         if ($user) {
-            return $user->firstName . ' ' . $user->lastName . '<br />' . $id;
+            return '<b>' . $user->userName . '</b><br />' . $user->firstName . ' ' . $user->lastName;
         }
         return '';
+    }
+
+    public function getUsername($id) {
+        $user = User::where('myid', $id)->first();
+        if ($user) {
+            return $user->userName;
+        }
+        return '';
+    }
+
+    public function getStage($id) {
+        $user = User_rank::where('myid', $id)->first();
+        if ($user) {
+            return $user->stage;
+        }
+        return '1';
 
     }
 
-    public function getUserId($username)
-    {
-        // $user = new User();
+    public function getFullNameByUsername($username) {
+        $user = User::where('userName', $username)->first();
+        if ($user) {
+            return $user->firstName . ' ' . $user->lastName;
+        }
+        return '0';
+
+    }
+
+    public function getUserId($username) {
         $user = User::where('userName', $username)->first();
         if ($user) {
             return $user->myid;

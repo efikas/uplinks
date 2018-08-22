@@ -9,6 +9,12 @@ class User_rank extends Eloquent
 
     public $timestamps = [];
 
+    public function user(){
+        return $this->belongsTo(User::class, 'myid', 'myid');
+        // **user_id** is the column that represent foreign key from table users
+        // **id** is the name of primary key column inside users table (the column that you are referencing with foreign key)
+    }
+
     /**
      * Get the phone record associated with the user.
      */

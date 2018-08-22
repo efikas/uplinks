@@ -1,19 +1,42 @@
-
 <?php include('head.php');
 
 function send_mail($to, $message, $name) {
 
     // $to = "somebody@example.com, somebodyelse@example.com";
-    $subject = "Uplinks Trasaction Pin";
+    $subject = "Uplinks OTP";
 
-    $message = "
-        <html><head>
-        <title>Uplink email</title>
-        </head>
-        <body>
-        <p>Dear " . $name . ",</p>
-        <b>Uplinks Trasaction Pin Request</b>
-        <p>Your trasaction pin is <b>" . $message . "</b></p></body></html>";
+
+    $message = <<<EOD
+        <html>
+            <head>
+                <title>Uplinks OTP</title>
+            </head>
+            <body>
+                <div style="margin:0px;padding:0px;font-family:Open Sans,Tahoma,Times,serif;background:rgb(77,158,185) none repeat scroll 0% 0%;width:100%;float:left">
+                    <div style="width:590px;margin:auto;margin-top:50px;margin-bottom:50px">
+                        <div style="background:#fff;width:100%;float:left;margin-bottom:50px">
+                            <div style="width:490px;float:left;text-align:center;margin:25px 0px 0px 43px">
+                                <img src="assets/img/logo/uplinkslogo_3D.png" height="100"><br><br>
+                                <div style="font-weight:600;color:rgb(255,255,255);font-size:30px;line-height:30px;padding:18px 0px 12px;background-color:rgb(255,114,67);font-family:Arial,cursive">
+                                Fund Transfer OTP
+                                </div>
+                                <div style="font-family:Lato;font-weight:400;color:rgb(72,72,72);font-size:25px;line-height:35px;margin-top:13px">
+                                    Hello!  your Otp for fund transfer is $message
+                                </div>
+                                <div style="width:500px;text-align:left;height:1px;background-color:#000;float:left">
+                                </div>
+                                <div style="height:1px;background:rgb(218,218,218) none repeat scroll 0% 0%;margin-top:20px">
+                                </div>
+                                <p style="font-family:Lato,Arial;font-weight:400;font-size:15px;line-height:24px;color:#0c0b0c;margin:26px 0px 20px 0px!important">
+                                UpLinks<br> All rights reserved 2018 </p><div class="yj6qo"></div><div class="adL">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </body>
+        </html>
+EOD;
 
     // Always set content-type when sending HTML email
     $headers = "MIME-Version: 1.0" . "\r\n";
@@ -43,7 +66,8 @@ if($my_stage==1){
 
 <?php
     $request_error = "";
-    if( isset($_POST['submit']) ) {
+    // if( isset($_POST['submit']) ) {
+    if( isset($_GET['msg']) ) {
         $error_msg = $_GET['msg'];
     }
     if( isset($_POST['btn-request']) ) {
@@ -130,7 +154,11 @@ if($my_stage==1){
     <div class="row">
 
         <div class="col-md-6 animateme scrollme" style="float:none; margin-left:auto; margin-right:auto;" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
-            <div style="color:#900;font-weight:bold;" align="center"><?php echo $error_msg; ?></div>
+           
+        <?php if($error_msg) { ?>
+            <div class="alert alert-danger" align="center"><?php echo $error_msg; ?></div>
+        <?php } ?>
+            
             <div><h1 style="color: red;"> <?php echo $request_error; ?></h1> </div>
 
             <form name="bankinfo" method="post" action="request_confirm.php">
@@ -140,91 +168,97 @@ if($my_stage==1){
                         <h3 class="panel-title">Withdrawal Request Form</h3>
                     </header>
                     <header class="panel-heading">
-                        <br> <h3 class="panel-title">e-Wallet Balance :  <strong><?php echo $my_balance; ?> </strong> USD<br><br>NOTE : Admin Charge of 4% will be levied for all Withdrawals<br><br>NOTE : Minimum Balance after withdrawal is <?php echo $min_acc_bal; ?> USD<br><br>Note :  If you do not have a valid e-mail your transfer will not be successful  <br>
+                        <br> <h3 class="panel-title">e-Wallet Balance :  <strong><?php echo $my_balance; ?> </strong> USD<br><br>
+                        <h3 class="text-warning">Important Notice</h3>
+                        <ul>
+                            <li>Admin Charge of 4% will be levied for all Withdrawals</li>
+                            <li>Minimum Balance after withdrawal is <?php echo $min_acc_bal; ?> USD</li>
+                            <li>If you do not have a valid e-mail your transfer will not be successful</li>
+                            <li>6 USD will be charge from your account for otp.</li>
+                        </ul>
                          <!--If you have not a valid phone number then you are not able to transfer -->
-                            <br>Note :  6 USD will be charge from your account for otp. </h3>
                             <!--0.06 USD will be charge from your account for otp sms.-->
-                        <br></header>
+                        </header>
                     <div class="panel-body">
                         <input name="wallet" id="wallet" tabindex="1" required="" class="" style="width:4%;" value="final_e_wallet" checked="checked" type="hidden">
 
                         <div class="form-group">
-                            <label for="exampleInputAddress">First Name</label>
+                            <label>First Name</label>
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <input name="fn" tabindex="1" value="<?php echo $my_firstName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="text">
+                                <input name="fn" tabindex="1" value="<?php echo $my_firstName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="text">
 
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleInputAddress">Last Name</label>
+                            <label>Last Name</label>
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <input name="ln" tabindex="1" value="<?php echo $my_lastName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="text">
+                                <input name="ln" tabindex="1" value="<?php echo $my_lastName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="text">
 
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleInputAddress">Account Name</label>
+                            <label>Account Name</label>
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <input name="acna" tabindex="1" value="<?php echo $my_accName; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="text">
+                                <input name="acna" tabindex="1" value="<?php echo $my_accName; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="text">
 
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleInputAddress">Account Number</label>
+                            <label>Account Number</label>
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <input name="acnu" tabindex="1" value="<?php echo $my_accNo; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="text">
-
-                            </div>
-                        </div>
-
-
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Bank Name</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <input name="bank_na" tabindex="1" value="<?php echo $my_bankName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="text">
+                                <input name="acnu" tabindex="1" value="<?php echo $my_accNo; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="text">
 
                             </div>
                         </div>
 
 
                         <div class="form-group">
-                            <label for="exampleInputAddress">Branch Name</label>
+                            <label>Bank Name</label>
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <input name="branch" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="text">
+                                <input name="bank_na" tabindex="1" value="<?php echo $my_bankName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="text">
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Branch Name</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"></span>
+                                <input name="branch" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="text">
 
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleInputAddress">OTP Will be sent to your mail</label>
+                            <label>OTP Will be sent to your mail</label>
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
                                 <input name="phone" required="" value="<?php echo $emai; ?> " readonly="" class="form-control" type="text">
                             </div>
 
                             <div class="form-group">
-                                <label for="exampleInputAddress"> Swift Code</label>
+                                <label> Swift Code</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <input name="swiftcode" tabindex="1" value="<?php echo $swiftcode; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="text">
+                                    <input name="swiftcode" tabindex="1" value="<?php echo $swiftcode; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="text">
 
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputAddress">Enter Amount</label>
+                            <label>Enter Amount</label>
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <input name="amount" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="number">
+                                <input name="amount" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="number">
 
                             </div>
                         </div>
@@ -236,20 +270,20 @@ if($my_stage==1){
 
 
                         <!--<div class="form-group">
-                            <label for="exampleInputAddress">Description</label>
+                            <label>Description</label>
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <input name="des" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="text">
+                                <input name="des" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="text">
 
                             </div>
                         </div>-->
 
 
                         <div class="form-group">
-                            <label for="exampleInputAddress">Enter Transaction Password</label>
+                            <label>Enter Transaction Password</label>
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <input name="tpass" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="password">
+                                <input name="tpass" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required="" type="password">
 
                             </div>
                         </div>

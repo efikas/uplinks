@@ -184,135 +184,141 @@ if( isset($_POST['btn-request']) ) {
               ?>
             <form onsubmit="return show_alert();" id="bankinfo_form" name="bankinfo" method="post" action="request_confirm.php">
 
-                <input name="sentotp" id="sentotp" tabindex="1" required="" class="" style="width:14%;" value="<?php echo $OTP;?>"  type="hidden">
-                <section class="panel">
+                <input name="sentotp" id="sentotp" tabindex="1" required="" class="" 
+                style="width:14%;" value="<?php echo $OTP;?>"  type="hidden" />
 
+                <section class="panel">
                     <header class="panel-heading">
-                        <h3 class="panel-title">Withdrawal Request Confirmation</h3>
+                        <h3 class="panel-title text-center">Withdrawal Request Confirmation</h3>
                     </header>
 
                     <div class="panel-body">
-                        <input name="wallet" id="wallet" tabindex="1" required="" class="" style="width:4%;" value="final_e_wallet" checked="checked" type="hidden">
+                        <input name="wallet" id="wallet" tabindex="1" required="" 
+                        class="" style="width:4%;" value="final_e_wallet" 
+                        checked="checked" type="hidden" />
 
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Confirm First Name</label>
-                            <div class="input-group">
-                                <?php echo $my_firstName; ?>  <input name="fn" tabindex="1" value="<?php echo $my_firstName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="hidden">
-
+                        <div class="row">
+                            <div class="col-sm-5"><span class="pull-right">First Name:</span></div>
+                            <div class="col-sm-5 text-success">
+                            <strong><?php echo $my_firstName; ?></strong>
+                            <input name="fn" tabindex="1" value="<?php echo $my_firstName; ?> " 
+                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                            class="form-control" required="" type="hidden" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5"><span class="pull-right">Last Name:</span></div>
+                            <div class="col-sm-5 text-success">
+                            <strong><?php echo $my_lastName; ?></strong>
+                            <input name="ln" tabindex="1" value="<?php echo $my_lastName; ?>" 
+                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                            class="form-control" required="" type="hidden" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5"><span class="pull-right">Account Name:</span></div>
+                            <div class="col-sm-5 text-success">
+                            <strong><?php echo $my_accName; ?></strong>
+                            <input name="acna" tabindex="1" value="<?php echo $my_accName; ?> " 
+                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                            class="form-control" required="" type="hidden" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5"><span class="pull-right">Account Number:</span></div>
+                            <div class="col-sm-5 text-success">
+                            <strong><?php echo $my_accNo; ?></strong>
+                            <input name="acnu" tabindex="1" value="<?php echo $my_accNo; ?> " 
+                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                            class="form-control" required="" type="hidden" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5"><span class="pull-right">Bank Name:</span></div>
+                            <div class="col-sm-5 text-success">
+                            <strong><?php echo $my_bankName; ?></strong>
+                            <input name="bank_na" tabindex="1" value="<?php echo $my_bankName; ?>" 
+                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                            class="form-control" required="" type="hidden" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5"><span class="pull-right">Bank Branch Name:</span></div>
+                            <div class="col-sm-5 text-success">
+                            <strong><?php echo $branch_name; ?></strong>
+                            <input name="branch" tabindex="1" value="<?php echo $my_accName; ?> " 
+                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                            class="form-control" required="" type="hidden" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5"><span class="pull-right">Swift Code:</span></div>
+                            <div class="col-sm-5 text-success">
+                            <strong><?php echo $swiftcode; ?></strong>
+                            <input name="swiftcode" tabindex="1" value="<?php echo $swiftcode; ?> " 
+                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                            class="form-control" required="" type="hidden" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5"><span class="pull-right">Amount:</span></div>
+                            <div class="col-sm-5 text-success">
+                            <strong>$<?php echo $amount; ?></strong>
+                            <input name="amount" tabindex="1" value="<?php echo $amount; ?>" 
+                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                            class="form-control" required="" type="hidden" />
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Confirm Last Name</label>
-                            <div class="input-group">
-                                <?php echo $my_lastName; ?>  <input name="ln" tabindex="1" value="<?php echo $my_lastName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="hidden">
 
+                        <div class="form-group text-center" style="margin-top: 20px">
+                            <strong>CHECK YOUR E-MAIL FOR OTP</strong>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5"><span class="pull-right">Enter the OTP:</span></div>
+                            <div class="col-sm-5 text-success">
+                            <input name="otp" tabindex="1" value="" 
+                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                            class="form-control" required="" type="text" />
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Confirm Account Name</label>
+                        <div hidden class="form-group text-center">
+                            <label>Enter the OTP</label>
                             <div class="input-group">
-                                <?php echo $my_accName; ?> <input name="acna" tabindex="1" value="<?php echo $my_accName; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="hidden">
-
+                                <input name="ootp" required="" class="form-control" type="hidden" />
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Confirm Account Number</label>
-                            <div class="input-group">
-                                <?php echo $my_accNo; ?>    <input name="acnu" tabindex="1" value="<?php echo $my_accNo; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="hidden">
-
-                            </div>
-                        </div>
+                        <input name="password" tabindex="1" value="stanley" 
+                        style="width:100%; border:1px solid #ebebeb; padding:5px;" 
+                        class="form-control" required="" type="hidden" />
 
 
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Confirm Bank Name</label>
-                            <div class="input-group">
-                                <?php echo $my_bankName; ?>  <input name="bank_na" tabindex="1" value="<?php echo $my_bankName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="hidden">
-
-                            </div>
-                        </div>
-
-
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Confirm Branch Name</label>
-                            <div class="input-group">
-                                <?php echo $branch_name; ?> <input name="branch" tabindex="1" value="<?php echo $branch_name; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="hidden">
-
-                            </div>
-                        </div>
-
-
-
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Confirm Swift Code</label>
-                            <div class="input-group">
-                                <?php echo $swiftcode; ?>   <input name="swiftcode" tabindex="1" value="<?php echo $swiftcode; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="hidden">
-
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Confirm Amount</label>
-                            <div class="input-group">
-                                <?php echo $amount; ?> <input name="amount" tabindex="1" value="<?php echo $amount; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="hidden">
-
-                            </div>
-                        </div>
-
-
-
-                        <div class="form-group">
-                            <label for="exampleInputAddress">CHECK YOUR E-MAIL FOR OTP</label>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="exampleInputAddress">Enter the OTP</label>
-                            <div class="input-group">
-                                <input name="otp" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="text">
-
-                            </div>
-                        </div>
-
-                        <div  hidden class="form-group">
-                            <label for="exampleInputAddress">Enter the OTP</label>
-                            <div class="input-group">
-
-
-                                <input name="ootp" required="" class="form-control" id="exampleInputAddress" type="hidden">
-                            </div>
-                        </div>
-
-                        <input name="password" tabindex="1" value="stanley" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" id="exampleInputAddress" required="" type="hidden">
-
-
-                        <input name="wallet_from" id="wallet_from" tabindex="1" value="withdrawal" type="hidden">
-                        <input id="id" name="id" value="247930378958" type="hidden">
-
-
-
-
+                        <input name="wallet_from" id="wallet_from" 
+                        tabindex="1" value="withdrawal" type="hidden" />
+                        <input id="id" name="id" value="247930378958" type="hidden" />
 
 
 
                         <div class="row">
                             <div class="col-md-12 animateme scrollme" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
                                 <div class="panel">
-                                    <div class="panel-body">
-                                        <input style="color:white;background-color:#daa520 !important;" name="btn-request" id="btn-request" value="Submit" class="btn btn-primary" type="submit">             </div>
+                                    <div class="panel-body text-center">
+                                        <input style="color:white;background-color:#daa520 !important;" 
+                                        name="btn-request" id="btn-request" value="Submit" 
+                                        class="btn btn-primary" type="submit" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                    </div></section>
+                    </div>
+                    </section>
 
             </form>
-<?php } ?>
+<?php } } ?>
         </div> <!-- / col-md-6 -->
-
-
 
     </div> <!-- / row -->
 

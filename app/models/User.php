@@ -9,6 +9,20 @@ class User extends Eloquent
 
     public $timestamps = [];
 
+    public function userRank(){
+        return $this->hasOne(User_rank::class, 'myid', 'myid');
+        // second parameter is **user_id** because that's the column name that represent foreign key inside user_rank table
+        // third parameter is **id** because that's the column name for local key inside users table.
+        // Second and third parameter can be omitted here because they will default to those values
+    }
+
+    public function stagesPayment(){
+        return $this->hasOne(Stages_payment::class, 'user_id', 'myid');
+        // second parameter is **user_id** because that's the column name that represent foreign key inside user_rank table
+        // third parameter is **id** because that's the column name for local key inside users table.
+        // Second and third parameter can be omitted here because they will default to those values
+    }
+
 //    public function ref1(){ return $this->belongsTo(User::class, 'desc_1', 'myid');}
 //    public function ref2(){ return $this->belongsTo(User::class,  'desc_2', 'myid');}
 //    public function ref3(){ return $this->belongsTo(User::class,  'desc_3', 'myid');}
