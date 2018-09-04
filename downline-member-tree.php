@@ -4,16 +4,16 @@
  * @copyright 2017
  */
 
-//ob_start();
+ob_start();
 session_start();
-if(!isset($_SESSION['user'])) { ?>
+if (!isset($_SESSION['user'])) { 
+?>
 
     <script type="text/javascript">
         document.location.href = "index.php?msg=Thank you ! You are now logged out!";
     </script>
 
-    <?php
-
+<?php
     die();
 
 }
@@ -28,7 +28,7 @@ else {
     require_once 'includes/DownLineTree.php';
     require_once 'includes/SearchTree.php';
 
-    $user = new User();
+    // $user = new User();
     $tree = new DownLineTree();
     $searchTree = new SearchTree();
     $userStage = 1;
@@ -36,14 +36,14 @@ else {
     $username = $_SESSION['user'];
     $user = User::where('email', $username)->first();
 
-    if(isset($_POST['submit'])){
+    if (isset($_POST['submit'])) {
         //get the id of the user name
         $userName = trim($_POST['userN']); // Username from post
         $searchId = User::where('userName', $userName)->pluck('myid');
 
         //check if id exist in downlink of user
-        if(sizeof($searchId) > 0){
-            if($searchTree->searchDownLine($user->myid, $searchId)){
+        if (sizeof($searchId) > 0) {
+            if ($searchTree->searchDownLine($user->myid, $searchId)) {
                 $userTree = $tree->myDownlineTree($searchId);
                 $userStage = UserClass::getStage($searchId);
             }
@@ -67,9 +67,9 @@ else {
         <html class=" js csstransforms3d csstransitions csstransformspreserve3d" lang="en">
 
         <head>
-            <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-            <meta charset="utf-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
             <title>Welcome to Uplinks Member Dashboard</title>
 
             <!-- Fonts -->
@@ -84,7 +84,7 @@ else {
             <table style="width:100%;text-align:center;border:2px solid #000;">
                 <tr>
                     <td>
-                        <img src="dashboard_files/logo-inverse.png" style="width:300px;">
+                        <img src="dashboard_files/logo-inverse.png" style="width:300px;" />
                     </td>
                 </tr>
                 <tr>
@@ -99,26 +99,29 @@ else {
                 </tr>
             </table>
             <form name="info" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off">
-                <input type="hidden" name="url" value="metrixlevel.php">
+                <input type="hidden" name="url" value="metrixlevel.php" />
                 <table style="width:100%;text-align:center;border:2px solid #000;">
 
                     <tr>
                         <td>Search a downline member :
                             <input name="userN" type="text" />&nbsp;&nbsp;
-                            <input type="submit" name="submit" value="Search">
+                            <input type="submit" name="submit" value="Search" />
                         </td>
                     </tr>
                 </table>
             </form>
             <?php
-    if($userStage == 1 || $userStage == 5 ){
+    if ($userStage == 1 || $userStage == 5 ) {
 ?>
                 <div class="tree text-center" style="overflow: visible; padding-left: 400px !important">
-                    <?php }else{ ?>
-                    <div class="tree text-center" style="overflow: visible; width: 2000px !important">
-                        <?php
+            <?php 
+        }
+        else { 
+        ?>
+            <div class="tree text-center" style="overflow: visible; width: 2000px !important">
+        <?php
 }
-    echo $userTree
+    echo $userTree;
 ?>
                     </div>
 

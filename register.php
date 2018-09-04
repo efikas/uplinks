@@ -246,6 +246,7 @@ if (isset($_POST['register'])) {
                 if($payed) { //if payment successful
                     //register new user
                     $password = hash('sha256', $pass);
+                    $trans_password = hash('sha256', $tran_pass);
                     $added = date("Y-m-d h:i:s a");
 
                     // todo:: change the mode of the $myId to md5($username . $added)
@@ -267,8 +268,11 @@ if (isset($_POST['register'])) {
                             'state' => $state,
                             'zipcode' => $zipcode,
                             'phoneNo' => $phone,
-                            'email' => $email,
+                            'email' => $username . '@uplinks.biz',
                             'password' => $password,
+                            'mail_address' => $email,
+                            't_password' => $trans_password,
+                            'status' => 'paid',
                     ]);
 
                     // attach the user id to the referrer ar a reffered

@@ -267,8 +267,9 @@ if(!isset($_SESSION['user'])) {
           <!-- start of LOGO CONTAINER -->
       <div id="logo-container">
          <a target="_self" href="index2.php" id="logo-img">
-          <img src="dashboard_files/logo-inverse.png" alt="Home Page" style="margin-top:5px;" width="150">
-          <!-- <img src="../images/logo-inverse.png" data-no-retina   width="20" style="margin-top:-10px;" alt="Home Page"> -->
+          <img src="assets/img/logo/uplinkslogo_3D.png" alt="Home Page" 
+          style="margin-top:-10px;" width="100">
+          <!-- <img src="assets/img/logo/uplinkslogo_3D.png" data-no-retina   width="20" style="margin-top:-10px;" alt="Home Page"> -->
         </a>
       </div>
       <!-- end of LOGO CONTAINER -->
@@ -478,7 +479,7 @@ if(!isset($_SESSION['user'])) {
                         <li>
                           <a href="binary-income-report.php">
                             <div class="img-container">
-                              <img src="dashboard_files/demoimage.htm" alt="">
+                              <img src="dashboard_files/demoimage.htm" alt="" />
                             </div>
                             <span style="color:#000;">Binary Income</span>
                           </a>
@@ -487,7 +488,7 @@ if(!isset($_SESSION['user'])) {
                         <li>
                           <a href="matching-income-report.php">
                             <div class="img-container">
-                              <img src="dashboard_files/demoimage.htm" alt="">
+                              <img src="dashboard_files/demoimage.htm" alt="" />
                             </div>
                             <span style="color:#000;">Matching Income</span>
                           </a>
