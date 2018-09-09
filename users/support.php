@@ -10,27 +10,37 @@
     $added=time().'-'.mt_rand();;
     
     $uniqueId= time().'-'.mt_rand();
-    $img = $emai.$added.basename( $_FILES["img"]["name"]); 
-    $support_query = "INSERT INTO msg(email,mes,img,subject,category) VALUES('$emai','$mes','$img','$subject','$category')";
-    
-    mysqli_query($dbc, $support_query);
-         
-        
-        $target_dir = "support/uploads/".$emai.$added;
-        $target_file = $target_dir . basename($_FILES["img"]["name"]);
-        $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+    $img = $emai.$added.basename( $_FILES["img"]["name"]);
 
-        if (move_uploaded_file($_FILES["img"]["tmp_name"], $target_file)) {
-        echo "Your image ". basename( $_FILES["img"]["name"]). " has been sent to admin.";
-        } else {
-        echo "Sorry, there was an error uploading your file.";
-                }
+    $isUploadError = false;
+
+    if(file_exists($_FILES['img']['tmp_name'])) {
+        $target_dir = "support/uploads/" . $emai . $added;
+        $target_file = $target_dir . basename($_FILES["img"]["name"]);
+        $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+
+        if (move_uploaded_file($_FILES["img"]["tmp_name"], $target_file)) {}
+        else {
+            $isUploadError = true;
+        }
+    }
+
+    if(!$isUploadError){
+        $support_query = "INSERT INTO msg(email,mes,img,subject,category) VALUES('$emai','$mes','$img','$subject','$category')";
+        mysqli_query($dbc, $support_query);
+        echo "<div class='alert alert-success' role='alert'>Message sent Successfully.</div>";
+    }
+    else {
+        echo "<div class='alert alert-danger' role='alert'>Sorry, there was an error sending your message. Try again later</div>";
+    }
+
     unset($emai); 
     }
         
 ?>
 
 <section id="page-title" class="row">
+    <div class="info"
 
           <div class="col-md-8 animateme scrollme" style="float: none; color: rgb(153, 0, 0); text-align: center; font-size: 16px; opacity: 1; transform: translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale3d(1, 1, 1);" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
             <!--<h1>Downline Member Report</h1>-->
@@ -72,8 +82,7 @@
 											<option value="financial">Financial</option>
 											<option value="technical">Technical</option>
 											<option value="general">General </option>
-											<option value="product">Product </option>
-                      <option>Others </option>
+											<option value="product">Product </option><option>Others </option>
 											</optgroup>
 										</select>
 									</div>

@@ -267,8 +267,8 @@ if(!isset($_SESSION['user'])) {
           <!-- start of LOGO CONTAINER -->
       <div id="logo-container">
          <a target="_self" href="index2.php" id="logo-img">
-          <img src="assets/img/logo/uplinkslogo_3D.png" alt="Home Page" 
-          style="margin-top:-10px;" width="100">
+          <img src="assets/img/logo/uplinkslogo_3D.png" alt="Home Page"
+          style="margin-top:-15px; margin-left: -40px" width="100" height="110">
           <!-- <img src="assets/img/logo/uplinkslogo_3D.png" data-no-retina   width="20" style="margin-top:-10px;" alt="Home Page"> -->
         </a>
       </div>
@@ -342,7 +342,7 @@ if(!isset($_SESSION['user'])) {
                </ul>
             </li>
  
-            <li> <a href="new-member-registration.php" target="_blank"> <i class="ti-desktop"></i> <span>Register Member</span></a> </li>
+            <li> <a href="register.php" target="_blank"> <i class="ti-desktop"></i> <span>Register Member</span></a> </li>
 
              <li><a target="_self" href="#"> <i class="ti-receipt"></i> <span>Support Management </span> <i class="pull-right has-submenu ti-angle-right"></i> </a>
               <ul class="nav nav-submenu submenu-hidden"> 
@@ -479,7 +479,7 @@ if(!isset($_SESSION['user'])) {
                         <li>
                           <a href="binary-income-report.php">
                             <div class="img-container">
-                              <img src="dashboard_files/demoimage.htm" alt="">
+                              <img src="dashboard_files/demoimage.htm" alt="" />
                             </div>
                             <span style="color:#000;">Binary Income</span>
                           </a>

@@ -39,14 +39,15 @@
 						   http://uplinks.biz/reg.php?<?php echo $myid;?>						   </a>  <br>
 						   <br>
 
-							<a href="http://www.facebook.com/sharer.php?u=http://uplinks.biz/reg.php?<?php echo $myid;?>" target="_blank"><img src="assets/img/facebook.png" width="120"></a> &nbsp;
+							<a href="http://www.facebook.com/sharer.php?u=http://uplinks.biz/reg.php?<?php echo $myid;?>" target="_blank"><img src="assets/img/facebook.png" width="80"></a> &nbsp;
 
-							<a href="http://twitter.com/share?url=http://uplinks.biz/reg.php?<?php echo $myid;?>" target="_blank"><img src="assets/img/twitter.png" width="120"></a> &nbsp;
+							<a href="http://twitter.com/share?url=http://uplinks.biz/reg.php?<?php echo $myid;?>" target="_blank"><img src="assets/img/twitter.png" width="80"></a> &nbsp;
 
-							<a href="http://twitter.com/share?url=http://uplinks.biz/reg.php?<?php echo $myid;?>" target="_blank"><img src="assets/img/whatsapp.png" width="120"></a> &nbsp;
-					  
+							<a href="http://twitter.com/share?url=http://uplinks.biz/reg.php?<?php echo $myid;?>" target="_blank"><img src="assets/img/whatsapp.png" width="80"></a> &nbsp;
+							<a href="http://twitter.com/share?url=http://uplinks.biz/reg.php?<?php echo $myid;?>" target="_blank"><img src="assets/img/instagram.jpeg" width="80"></a> &nbsp;
+
 						  
-							<a href="https://plusone.google.com/_/+1/confirm?hl=en&amp;url=http://uplinks.biz/reg.php?<?php echo $myid;?>" target="_blank"><img src="assets/img/sg.png" width="120"></a>
+							<a href="https://plusone.google.com/_/+1/confirm?hl=en&amp;url=http://uplinks.biz/reg.php?<?php echo $myid;?>" target="_blank"><img src="assets/img/sg.png" width="80"></a>
 							<br>
 
 						</div>

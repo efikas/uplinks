@@ -1,5 +1,10 @@
 <?php
 
+require_once 'app/init.php';
+require_once 'includes/Referred.php';
+
+$superiorUser = new Referred();
+
 $firstname = '';
 $lastname = '';
 $address = '';
@@ -153,6 +158,12 @@ if (isset($_POST['register'])) {
          $sup = User::where('userName', $referer)->first();
          if($sup){
              $superior_id = $sup->myid;
+
+             // check if the referrer have up to two refferee
+             if (sizeof($superiorUser->getDirectDownLink($superior_id)) > 1){
+                 $error = true;
+                 array_push($error_array, "The referrer's immediate downline members is completed");
+             }
          }
          else {
              $error = true;

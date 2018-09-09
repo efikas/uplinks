@@ -1,51 +1,57 @@
-<?php include('head.php'); ?>
 <?php
-if( isset($_POST['btn-paid']) ) {
+
+    include('head.php');
+
+    require_once 'app/init.php';
+    require_once 'includes/UserClass.php';
+    $userClass = new UserClass();
+
+    if( isset($_POST['btn-paid']) ) {
      
 	    if(($my_userName !="Admin1") && ($my_userName !='Admin2')){
 	        echo "<script> alert(' Sorry you do not have the administrative priviledge to perform this action') </script>";
 	        
 	    }else{
     
-    $user_id = trim($_POST['user_id']);
-    $amount = trim($_POST['amount']);
-    $fund_id = trim($_POST['fund_id']);
-    mysqli_query($dbc, "UPDATE `add_fund_request` SET `status`= 'paid' WHERE `id`='$fund_id'");
+        $user_id = trim($_POST['user_id']);
+        $amount = trim($_POST['amount']);
+        $fund_id = trim($_POST['fund_id']);
+        mysqli_query($dbc, "UPDATE `add_fund_request` SET `status`= 'paid' WHERE `id`='$fund_id'");
 
 
-    $query = "SELECT * FROM `user_table` WHERE `myid` = '$user_id'";
-    $res = mysqli_query($dbc, $query);
-    $row = mysqli_fetch_array($res);
-    $userNa = $row['firstName'].' '.$row['lastName'];
+        $query = "SELECT * FROM `user_table` WHERE `myid` = '$user_id'";
+        $res = mysqli_query($dbc, $query);
+        $row = mysqli_fetch_array($res);
+        $userNa = $row['firstName'].' '.$row['lastName'];
 
-    $query = "INSERT INTO `wallet_history` SET `sender_id`='admin', receiver_id='$user_id', sender_name='admin',
- receiver_name='$userNa', Credit='$amount', Debit='nill', Remark='fund to your wallet', Status='paid'";
+        $query = "INSERT INTO `wallet_history` SET `sender_id`='admin', receiver_id='$user_id', sender_name='admin',
+          receiver_name='$userNa', Credit='$amount', Debit='nill', Remark='fund to your wallet', Status='paid'";
 
-    $res = mysqli_query($dbc, $query);
+        $res = mysqli_query($dbc, $query);
 
 
-    $query = "SELECT * FROM `user_rank` WHERE `myid` = '$user_id'";
-    $res = mysqli_query($dbc, $query);
+        $query = "SELECT * FROM `user_rank` WHERE `myid` = '$user_id'";
+        $res = mysqli_query($dbc, $query);
 
-    $row = mysqli_fetch_array($res);
+        $row = mysqli_fetch_array($res);
 
-    $bal = $row[balance];
-    $newbalance = $bal + $amount;
+        $bal = $row[balance];
+        $newbalance = $bal + $amount;
 
-    mysqli_query($dbc, "UPDATE `user_rank` SET `balance`=$newbalance WHERE `myid`='$user_id'");
+        mysqli_query($dbc, "UPDATE `user_rank` SET `balance`=$newbalance WHERE `myid`='$user_id'");
+        }
+
     }
+    if( isset($_POST['userN']) ) {
+        $userN = trim($_POST['userN']);
 
-}
-if( isset($_POST['userN']) ) {
-    $userN = trim($_POST['userN']);
-
-    $query = "SELECT * FROM `user_table` WHERE `userName` = '$userN'";
-    $res = mysqli_query($dbc, $query);
-    $row = mysqli_fetch_array($res);
-    $userN = $row['myid'];
-    $query= mysqli_query($dbc,"SELECT * FROM `add_fund_request` WHERE `user_id`='$userN'");
-    $row = mysqli_fetch_array($query);
-}
+        $query = "SELECT * FROM `user_table` WHERE `userName` = '$userN'";
+        $res = mysqli_query($dbc, $query);
+        $row = mysqli_fetch_array($res);
+        $userN = $row['myid'];
+        $query= mysqli_query($dbc,"SELECT * FROM `add_fund_request` WHERE `user_id`='$userN'");
+        $row = mysqli_fetch_array($query);
+    }
 
 
     if(isset($_GET['page'])){
@@ -106,7 +112,7 @@ if( isset($_POST['userN']) ) {
                     <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_0_length"> <form id="maxdisplay" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off"><label>Show <select  id="itemsperpage" onchange="getState(this.value)"  name="itemsperpage" aria-controls="DataTables_Table_0" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div> </form> <form id="search" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off"> <div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Search:<input name="userN" type="text"></input> </label></div></form>
                     <table class="table datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                           <thead>
-                      <tr><th >S/No.</th> <th >User Id</th>  <th >Amount in Dollar</th>   <th >Amount in Naira</th> <th >Date Raised</th> <th >Status/Action</th></tr>
+                      <tr><th >S/No.</th> <th >Username</th>  <th >Amount in Dollar</th>   <th >Amount in Naira</th> <th >Date Raised</th> <th >Status/Action</th></tr>
                     </thead>
 
                     <?php if( isset($_POST['userN']) ) {
@@ -128,6 +134,7 @@ if( isset($_POST['userN']) ) {
                         $ref_amount_in_n[$i] =  $row['amount_in_n'];
                         $ref_amount_in_d[$i]= $row['amount_in_d'];
                         $ref_user_id[$i]= $row['user_id'];
+                        $ref_username[$i]= $userClass->getUsername($row['user_id']);
                         $ref_date[$i]= $row['date'];
                         $ref_status[$i]= $row['status'];
 
@@ -140,7 +147,7 @@ if( isset($_POST['userN']) ) {
 
                               <th scope="row" class="sorting_1"><?php echo $i;?></th>
 
-                              <td><?php echo $ref_user_id[$i];?></td>
+                              <td><?php echo $ref_username[$i];?></td>
                               <td><?php echo $ref_amount_in_d[$i];?></td>
                               <td><?php echo $ref_amount_in_n[$i];?></td>
                               <td><?php echo $ref_date[$i];?></td>
@@ -189,7 +196,8 @@ if( isset($_POST['userN']) ) {
                                 $fund_id[$i] =  $row['id']; 
                                 $ref_amount_in_n[$i] =  $row['amount_in_n'];                               
                                 $ref_amount_in_d[$i]= $row['amount_in_d']; 
-                                $ref_user_id[$i]= $row['user_id']; 
+                                $ref_user_id[$i]= $row['user_id'];
+                                $ref_username[$i]= $userClass->getUsername($row['user_id']);
                                 $ref_date[$i]= $row['date'];  
                                 $ref_status[$i]= $row['status'];
                                 $start_count++;
@@ -199,7 +207,7 @@ if( isset($_POST['userN']) ) {
                                 
                         <th scope="row" class="sorting_1"><?php echo $start_count;?></th>
                                 
-                                <td><?php echo $ref_user_id[$i];?></td>
+                                <td><?php echo $ref_username[$i];?></td>
                                 <td><?php echo $ref_amount_in_d[$i];?></td>                      
                                 <td><?php echo $ref_amount_in_n[$i];?></td> 
                                 <td><?php echo $ref_date[$i];?></td>

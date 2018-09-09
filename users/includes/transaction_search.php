@@ -18,7 +18,7 @@ if(!empty($username)) {
         echo $row['firstName'] . ' ' . $row['lastName'];
     }
     else {
-        echo {};
+        echo "0";
     }
 
 }

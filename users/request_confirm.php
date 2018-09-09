@@ -1,4 +1,3 @@
-
 <?php include('head.php');
 
 if($my_stage==1){
@@ -48,11 +47,11 @@ if( isset($_POST['btn-request1']) ) {
     } else {
         $error = true;
         $errMSG = "Incorrect Credentials, Try again...";
-?> 
+?>
 
-    <script type="text/javascript">
-        document.location.href="withdraw-request.php?msg=Wrong Transaction Password!<? echo $count; ?>";
-    </script>
+<script type="text/javascript">
+    document.location.href = "withdraw-request.php?msg=Wrong Transaction Password!<? echo $count; ?>";
+</script>
 <?
         header("Location: withdraw-request.php?msg=Wrong Transaction Password!");
     }
@@ -65,25 +64,20 @@ if( isset($_POST['btn-request1']) ) {
     }else{
         
         ?>
-        
-    <script type="text/javascript">
-        document.location.href="withdraw-request.php?msg=Error!!!.....You do not have the minimum balance for your stage to withdraw!";
-    </script>
-        <?
 
+    <script type="text/javascript">
+        document.location.href =
+            "withdraw-request.php?msg=Error!!!.....You do not have the minimum balance for your stage to withdraw!";
+    </script>
+<?php
         header("Location: withdraw-request.php?msg=Error!!!.....You do not have the minimum balance for your stage to withdraw");
     }
-} else{
-?>
-  
-
-<?php
 }
 ?>
 
 
 
-<?php
+        <?php
 $request_error = "";
 if( isset($_POST['btn-request']) ) {
     $amount = $_POST['amount'];
@@ -115,14 +109,13 @@ if( isset($_POST['btn-request']) ) {
 
     }else {
         $error = true;
-        ?>
+?>
     <script type="text/javascript">
-        document.location.href="withdraw-request.php?msg=Wrong OTP!";
+        document.location.href = "withdraw-request.php?msg=Wrong OTP!";
     </script>
+<?php 
 
-<?php
-        
-    }
+}
 
     if($my_balance >= $amount && $my_balance - $amount >= $min_acc_bal){
         $newbalance = $my_balance - $amount;
@@ -153,185 +146,227 @@ if( isset($_POST['btn-request']) ) {
 
 ?>
 
-<!-- PAGE TITLE -->
-<section id="page-title" class="row">
+                <!-- PAGE TITLE -->
+                <section id="page-title" class="row">
 
-    <div class="col-md-8 animateme scrollme" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
-        <h1>Withdrawal Request</h1>
-        <p></p><div style="color:#900;font-weight:bold;" align="center"></div><p></p>
-    </div>
-
-
-
-    <div class="col-md-4 animateme scrollme" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
-
-        <ol class="breadcrumb pull-right no-margin-bottom">
-            <li><a href="#">e-Wallet</a></li>
-            <li><a href="#">e-Wallet Withdrawal Request</a></li>
-        </ol>
-
-    </div>
-</section> <!-- / PAGE TITLE -->
-
-<div class="container-fluid">
-    <div class="row">
-
-        <div class="col-md-6 animateme scrollme" style="float:none; margin-left:auto; margin-right:auto;" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
-
-            <div><h1 style="color: red;"> <?php echo $request_error; ?></h1> </div>
-            <?php if($request_error !=""){}
-            else{
-              ?>
-            <form onsubmit="return show_alert();" id="bankinfo_form" name="bankinfo" method="post" action="request_confirm.php">
-
-                <input name="sentotp" id="sentotp" tabindex="1" required="" class="" 
-                style="width:14%;" value="<?php echo $OTP;?>"  type="hidden" />
-
-                <section class="panel">
-                    <header class="panel-heading">
-                        <h3 class="panel-title text-center">Withdrawal Request Confirmation</h3>
-                    </header>
-
-                    <div class="panel-body">
-                        <input name="wallet" id="wallet" tabindex="1" required="" 
-                        class="" style="width:4%;" value="final_e_wallet" 
-                        checked="checked" type="hidden" />
-
-                        <div class="row">
-                            <div class="col-sm-5"><span class="pull-right">First Name:</span></div>
-                            <div class="col-sm-5 text-success">
-                            <strong><?php echo $my_firstName; ?></strong>
-                            <input name="fn" tabindex="1" value="<?php echo $my_firstName; ?> " 
-                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                            class="form-control" required="" type="hidden" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5"><span class="pull-right">Last Name:</span></div>
-                            <div class="col-sm-5 text-success">
-                            <strong><?php echo $my_lastName; ?></strong>
-                            <input name="ln" tabindex="1" value="<?php echo $my_lastName; ?>" 
-                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                            class="form-control" required="" type="hidden" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5"><span class="pull-right">Account Name:</span></div>
-                            <div class="col-sm-5 text-success">
-                            <strong><?php echo $my_accName; ?></strong>
-                            <input name="acna" tabindex="1" value="<?php echo $my_accName; ?> " 
-                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                            class="form-control" required="" type="hidden" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5"><span class="pull-right">Account Number:</span></div>
-                            <div class="col-sm-5 text-success">
-                            <strong><?php echo $my_accNo; ?></strong>
-                            <input name="acnu" tabindex="1" value="<?php echo $my_accNo; ?> " 
-                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                            class="form-control" required="" type="hidden" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5"><span class="pull-right">Bank Name:</span></div>
-                            <div class="col-sm-5 text-success">
-                            <strong><?php echo $my_bankName; ?></strong>
-                            <input name="bank_na" tabindex="1" value="<?php echo $my_bankName; ?>" 
-                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                            class="form-control" required="" type="hidden" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5"><span class="pull-right">Bank Branch Name:</span></div>
-                            <div class="col-sm-5 text-success">
-                            <strong><?php echo $branch_name; ?></strong>
-                            <input name="branch" tabindex="1" value="<?php echo $my_accName; ?> " 
-                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                            class="form-control" required="" type="hidden" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5"><span class="pull-right">Swift Code:</span></div>
-                            <div class="col-sm-5 text-success">
-                            <strong><?php echo $swiftcode; ?></strong>
-                            <input name="swiftcode" tabindex="1" value="<?php echo $swiftcode; ?> " 
-                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                            class="form-control" required="" type="hidden" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5"><span class="pull-right">Amount:</span></div>
-                            <div class="col-sm-5 text-success">
-                            <strong>$<?php echo $amount; ?></strong>
-                            <input name="amount" tabindex="1" value="<?php echo $amount; ?>" 
-                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                            class="form-control" required="" type="hidden" />
-                            </div>
-                        </div>
-
-
-                        <div class="form-group text-center" style="margin-top: 20px">
-                            <strong>CHECK YOUR E-MAIL FOR OTP</strong>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5"><span class="pull-right">Enter the OTP:</span></div>
-                            <div class="col-sm-5 text-success">
-                            <input name="otp" tabindex="1" value="" 
-                            style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                            class="form-control" required="" type="text" />
-                            </div>
-                        </div>
-
-                        <div hidden class="form-group text-center">
-                            <label>Enter the OTP</label>
-                            <div class="input-group">
-                                <input name="ootp" required="" class="form-control" type="hidden" />
-                            </div>
-                        </div>
-
-                        <input name="password" tabindex="1" value="stanley" 
-                        style="width:100%; border:1px solid #ebebeb; padding:5px;" 
-                        class="form-control" required="" type="hidden" />
-
-
-                        <input name="wallet_from" id="wallet_from" 
-                        tabindex="1" value="withdrawal" type="hidden" />
-                        <input id="id" name="id" value="247930378958" type="hidden" />
+                    <div class="col-md-8 animateme scrollme" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0"
+                        data-scale="0.5">
+                        <h1>Withdrawal Request</h1>
+                        <p></p>
+                        <div style="color:#900;font-weight:bold;" align="center"></div>
+                        <p></p>
+                    </div>
 
 
 
-                        <div class="row">
-                            <div class="col-md-12 animateme scrollme" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
-                                <div class="panel">
-                                    <div class="panel-body text-center">
-                                        <input style="color:white;background-color:#daa520 !important;" 
-                                        name="btn-request" id="btn-request" value="Submit" 
-                                        class="btn btn-primary" type="submit" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-md-4 animateme scrollme" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0"
+                        data-scale="0.5">
+
+                        <ol class="breadcrumb pull-right no-margin-bottom">
+                            <li>
+                                <a href="#">e-Wallet</a>
+                            </li>
+                            <li>
+                                <a href="#">e-Wallet Withdrawal Request</a>
+                            </li>
+                        </ol>
 
                     </div>
-                    </section>
+                </section>
+                <!-- / PAGE TITLE -->
 
-            </form>
-<?php } } ?>
-        </div> <!-- / col-md-6 -->
+                <div class="container-fluid">
+                    <div class="row">
 
-    </div> <!-- / row -->
+                        <div class="col-md-6 animateme scrollme" style="float:none; margin-left:auto; margin-right:auto;" data-when="enter" data-from="0.2"
+                            data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
 
-<script >
-    function show_alert() {
-  if(confirm("Do you really want to do this?"))
-    document.getElementById("bankinfo_form").submit();
-  else
-    return false;
-}
-    
-</script>
+                            <div>
+                                <h1 style="color: red;">
+                                    <?php echo $request_error; ?>
+                                </h1>
+                            </div>
+                            <?php if($request_error !=""){
+                echo "errooorr";
+            }
+            else{
+              ?>
+                            <form onsubmit="return show_alert();" id="bankinfo_form" name="bankinfo" method="post" action="request_confirm.php">
 
-</div> <!-- / container-fluid -->
+                                <input name="sentotp" id="sentotp" tabindex="1" required="" class="" style="width:14%;" value="<?php echo $OTP;?>" type="hidden"
+                                />
 
-<?php include('footer.php'); ?>
+                                <section class="panel">
+                                    <header class="panel-heading">
+                                        <h3 class="panel-title text-center">Withdrawal Request Confirmation</h3>
+                                    </header>
+
+                                    <div class="panel-body">
+                                        <input name="wallet" id="wallet" tabindex="1" required="" class="" style="width:4%;" value="final_e_wallet" checked="checked"
+                                            type="hidden" />
+
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <span class="pull-right">First Name:</span>
+                                            </div>
+                                            <div class="col-sm-5 text-success">
+                                                <strong>
+                                                    <?php echo $my_firstName; ?>
+                                                </strong>
+                                                <input name="fn" tabindex="1" value="<?php echo $my_firstName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;"
+                                                    class="form-control" required="" type="hidden" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <span class="pull-right">Last Name:</span>
+                                            </div>
+                                            <div class="col-sm-5 text-success">
+                                                <strong>
+                                                    <?php echo $my_lastName; ?>
+                                                </strong>
+                                                <input name="ln" tabindex="1" value="<?php echo $my_lastName; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;"
+                                                    class="form-control" required="" type="hidden" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <span class="pull-right">Account Name:</span>
+                                            </div>
+                                            <div class="col-sm-5 text-success">
+                                                <strong>
+                                                    <?php echo $my_accName; ?>
+                                                </strong>
+                                                <input name="acna" tabindex="1" value="<?php echo $my_accName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;"
+                                                    class="form-control" required="" type="hidden" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <span class="pull-right">Account Number:</span>
+                                            </div>
+                                            <div class="col-sm-5 text-success">
+                                                <strong>
+                                                    <?php echo $my_accNo; ?>
+                                                </strong>
+                                                <input name="acnu" tabindex="1" value="<?php echo $my_accNo; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;"
+                                                    class="form-control" required="" type="hidden" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <span class="pull-right">Bank Name:</span>
+                                            </div>
+                                            <div class="col-sm-5 text-success">
+                                                <strong>
+                                                    <?php echo $my_bankName; ?>
+                                                </strong>
+                                                <input name="bank_na" tabindex="1" value="<?php echo $my_bankName; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;"
+                                                    class="form-control" required="" type="hidden" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <span class="pull-right">Bank Branch Name:</span>
+                                            </div>
+                                            <div class="col-sm-5 text-success">
+                                                <strong>
+                                                    <?php echo $branch_name; ?>
+                                                </strong>
+                                                <input name="branch" tabindex="1" value="<?php echo $my_accName; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;"
+                                                    class="form-control" required="" type="hidden" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <span class="pull-right">Swift Code:</span>
+                                            </div>
+                                            <div class="col-sm-5 text-success">
+                                                <strong>
+                                                    <?php echo $swiftcode; ?>
+                                                </strong>
+                                                <input name="swiftcode" tabindex="1" value="<?php echo $swiftcode; ?> " style="width:100%; border:1px solid #ebebeb; padding:5px;"
+                                                    class="form-control" required="" type="hidden" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <span class="pull-right">Amount:</span>
+                                            </div>
+                                            <div class="col-sm-5 text-success">
+                                                <strong>$
+                                                    <?php echo $amount; ?>
+                                                </strong>
+                                                <input name="amount" tabindex="1" value="<?php echo $amount; ?>" style="width:100%; border:1px solid #ebebeb; padding:5px;"
+                                                    class="form-control" required="" type="hidden" />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group text-center" style="margin-top: 20px">
+                                            <strong>CHECK YOUR E-MAIL FOR OTP</strong>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <span class="pull-right">Enter the OTP:</span>
+                                            </div>
+                                            <div class="col-sm-5 text-success">
+                                                <input name="otp" tabindex="1" value="" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control" required=""
+                                                    type="text" />
+                                            </div>
+                                        </div>
+
+                                        <div hidden class="form-group text-center">
+                                            <label>Enter the OTP</label>
+                                            <div class="input-group">
+                                                <input name="ootp" required="" class="form-control" type="hidden" />
+                                            </div>
+                                        </div>
+
+                                        <input name="password" tabindex="1" value="stanley" style="width:100%; border:1px solid #ebebeb; padding:5px;" class="form-control"
+                                            required="" type="hidden" />
+
+
+                                        <input name="wallet_from" id="wallet_from" tabindex="1" value="withdrawal" type="hidden" />
+                                        <input id="id" name="id" value="247930378958" type="hidden" />
+
+
+
+                                        <div class="row">
+                                            <div class="col-md-12 animateme scrollme" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0"
+                                                data-scale="0.5">
+                                                <div class="panel">
+                                                    <div class="panel-body text-center">
+                                                        <input style="color:white;background-color:#daa520 !important;" name="btn-request" id="btn-request" value="Submit" class="btn btn-primary"
+                                                            type="submit" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </section>
+
+                            </form>
+                            <?php 
+            } ?>
+
+                        </div>
+                        <!-- / col-md-6 -->
+
+                    </div>
+                    <!-- / row -->
+
+                    <script>
+                        function show_alert() {
+                            if (confirm("Do you really want to do this?"))
+                                document.getElementById("bankinfo_form").submit();
+                            else
+                                return false;
+                        }
+                    </script>
+
+                </div>
+                <!-- / container-fluid -->
+
+                <?php include('footer.php'); ?>

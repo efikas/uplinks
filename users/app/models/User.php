@@ -7,7 +7,9 @@ class User extends Eloquent
     protected $table = 'user_table';
     protected $fillable = ['username', 'email'];
 
-    public $timestamps = [];
+    const CREATED_AT = 'added';
+
+    public $timestamps = [C];
 
     public function userRank(){
         return $this->hasOne(User_rank::class, 'myid', 'myid');
