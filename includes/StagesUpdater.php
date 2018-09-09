@@ -43,26 +43,26 @@ class StagesUpdater
         'complete_stage1_step1' => 0,
         'complete_stage1_step2' => 0,
 
-        'complete_stage2_step1' => 0,
-        'complete_stage2_step2' => 0,
-        'complete_stage2_step3' => 0,
-        'complete_stage2_step4' => 0,
-        'complete_stage2_step5' => 0,
+        'complete_stage2_step1' => 10,
+        'complete_stage2_step2' => 100,
+        'complete_stage2_step3' => 200,
+        'complete_stage2_step4' => 300,
+        'complete_stage2_step5' => 400,
 
-        'complete_stage3_step1' => 0,
-        'complete_stage3_step2' => 0,
-        'complete_stage3_step3' => 0,
-        'complete_stage3_step4' => 0,
-        'complete_stage3_step5' => 0,
+        'complete_stage3_step1' => 200,
+        'complete_stage3_step2' => 300,
+        'complete_stage3_step3' => 500,
+        'complete_stage3_step4' => 500,
+        'complete_stage3_step5' => 1500,
 
-        'complete_stage4_step1' => 0,
-        'complete_stage4_step2' => 0,
-        'complete_stage4_step3' => 0,
-        'complete_stage4_step4' => 0,
-        'complete_stage4_step5' => 0,
+        'complete_stage4_step1' => 300,
+        'complete_stage4_step2' => 300,
+        'complete_stage4_step3' => 500,
+        'complete_stage4_step4' => 900,
+        'complete_stage4_step5' => 4000,
 
-        'complete_stage5_step1' => 0,
-        'complete_stage5_step2' => 0,
+        'complete_stage5_step1' => 2000,
+        'complete_stage5_step2' => 10000,
         'complete_stage5_step3' => 0,
     ];
 
@@ -97,17 +97,17 @@ class StagesUpdater
 
                     // pay bonus for that step
                     $payer = new Payer();
-                    $a = $payer->payBonus($id, self::STAGESBONUS[self::STAGES[$i]], 
+                    $payer->payBonus($id, self::STAGESBONUS[self::STAGES[$i]],
                                         'Matrix bonus of $' . self::STAGESBONUS[self::STAGES[$i]]);
                 }
             }
 
             // update stage
             $newStage = 1;
-            if ($lowest >= 1) $newStage = 2;
-            if ($lowest >= 6) $newStage = 3;
-            if ($lowest >= 11) $newStage = 4;
-            if ($lowest >= 16) $newStage = 5;
+            if ($lowerStage >= 1) $newStage = 2;
+            if ($lowerStage >= 6) $newStage = 3;
+            if ($lowerStage >= 11) $newStage = 4;
+            if ($lowerStage >= 16) $newStage = 5;
 
             User_rank::where('myid', $id)
                         ->update(['stage' => $newStage]);

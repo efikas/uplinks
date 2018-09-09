@@ -1,5 +1,10 @@
 <?php
 
+require_once 'app/init.php';
+require_once 'includes/Referred.php';
+
+$superiorUser = new Referred();
+
 $firstname = '';
 $lastname = '';
 $address = '';
@@ -91,15 +96,6 @@ if (isset($_POST['register'])) {
             array_push($error_array, "Please enter a correct referer id.");
         }
 
-//        $res = mysqli_query($dbc, "//SELECT * FROM user_table WHERE userName='$referer'");
-//        $row = mysqli_fetch_array($res);
-//        $count = mysqli_num_rows($res); // if uname/pass correct it returns must be 1 row
-//        $referer_id = '';
-//        if ($count == 1) {
-//            $referer_id = $row['myid'];
-//        } else {
-//            $error = true; $error_referer = "Please enter a correct referer id.";
-//        }
     }
 
     if (empty($firstname)) { 
@@ -152,6 +148,12 @@ if (isset($_POST['register'])) {
          $sup = User::where('userName', $ref_username)->first();
          if($ref){
              $superior_id = $sup->myid;
+             
+             // check if the referrer have up to two refferee
+             if (sizeof($superiorUser->getDirectDownLink($superior_id)) > 1){
+                 $error = true;
+                 array_push($error_array, "The referrer's immediate downline members is completed");
+             }
          }
          else {
              $error = true;
@@ -227,6 +229,7 @@ if (isset($_POST['register'])) {
         
 
     if (!$error) {
+
         //confirmed the payer informations
         $res = User::where('userName', $payer_username)->first();
 

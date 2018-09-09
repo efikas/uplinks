@@ -52,7 +52,7 @@ class Referred
     /**
      * Create a new contextual binding builder.
      *
-     * @return Array return the array of the object containing name and id of the referred
+     * @return Array  | return the array of the object containing name and id of the referred
      */
     public function getDirectDownLink($id) {
         $directDownLink = [];

@@ -123,15 +123,19 @@ if( isset($_GET['msg']) ) {
 <input name="myid" id="myid" tabindex="1" required="" class="" style="width:14%;" value="<?php echo $myid;?>"  type="hidden">
             
            <div class="form-group">
-                      <label for="exampleInputAddress">Enter Recipient User ID/ Username</label>
+                      <label for="usernameQ">Enter Recipient User ID/ Username</label>
                       <div class="input-group">
                         <span class="input-group-addon"></span>
                         <input name="to_receive" required="" value="" class="form-control" id="usernameQ" type="text">
                       </div>
+                       <div>
+                           <label class="col-md-12" id="user_success" style="color: rgba(46,148,15,0.99); font-weight: bold"></label>
+                           <label class="col-md-12 user_error" style="color: red; font-weight: bold; display: none">Username does not exist</label>
+                       </div>
                       <div id="fullname" style="font-size:14px;color:green;font-weight:bold;"></div>
                     </div>
                      <div class="form-group">
-                      <label for="exampleInputAddress">Confirm Email</label>
+                      <label>Confirm Email</label>
                       <div class="input-group">
                         <span class="input-group-addon"></span>
                         <input name="email" required="" value="<?php echo $emai;?>" readonly="" class="form-control" type="text">
@@ -140,17 +144,17 @@ if( isset($_GET['msg']) ) {
                     </div>
 
            <div class="form-group">
-                      <label for="exampleInputAddress">Enter Amount to Transfer</label>
+                      <label>Enter Amount to Transfer</label>
                       <div class="input-group">
                         <span class="input-group-addon"></span>
-                        <input name="amounts" required="" value="" class="form-control" id="exampleInputAddress" type="text">
+                        <input name="amounts" required="" value="" class="form-control" type="text">
                       </div>
                     </div>
                          <div class="form-group">
-                      <label for="exampleInputAddress">Enter Transaction Password</label>
+                      <label>Enter Transaction Password</label>
                       <div class="input-group">
                         <span class="input-group-addon"></span>
-                        <input name="t_password" required="" value="" class="form-control" id="exampleInputAddress" type="password">
+                        <input name="t_password" required="" value="" class="form-control" type="password">
                       </div>
                     </div>
                  <div class="row">
@@ -176,5 +180,61 @@ if( isset($_GET['msg']) ) {
          
 
         </div>
+
+<script src="assets/js/jquery-2.2.4.min.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+
+        // Returns a function, that, as long as it continues to be invoked, will not
+        // be triggered. The function will be called after it stops being called for
+        // N milliseconds. If `immediate` is passed, trigger the function on the
+        // leading edge, instead of the trailing.
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+
+        //check if referrer username
+        var myEfficientFn = debounce(function() {
+            let username = $('#usernameQ').val();
+            if(username != ''){
+                $.post("includes/getuser.php", { username: username}, function(data){
+                    if(data == 0){
+                        $('#user_success').hide();
+                        $('.user_error').show();
+                        $('#user_success').html('');
+                        // $('#nextBtn1').removeClass('disabled');
+                    }
+                    else{
+                        $('#user_success').html(data);
+                        $('.user_error').hide();
+                        $('#user_success').show();
+                    }
+
+                });
+            }
+        }, 500);
+
+        $('#usernameQ').on('keyup', myEfficientFn);
+
+        $('#usernameQ').on('focus', function(){
+            $('#user_success').hide();
+            $('.user_error').hide();
+            $('#user_success').html('');
+        });
+
+
+    });
+</script>
 
 <?php include('footer.php'); ?>

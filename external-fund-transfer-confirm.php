@@ -279,7 +279,7 @@ if ( isset($_POST['update']) ) {
 
         <div class="col-md-6 animateme scrollme" style="float:none; margin-left:auto; margin-right:auto;" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
 
-            <form onsubmit="return show_alert();"  name="bankinfo" method="post" id="bankinfo_form" action="external-fund-transfer-confirm.php">
+            <form name="bankinfo" method="post" id="bankinfo_form" action="external-fund-transfer-confirm.php">
                 <section class="panel">
 
                     <header class="panel-heading">
@@ -292,19 +292,19 @@ if ( isset($_POST['update']) ) {
                        
                          <div class="row">
                              <div class="col-md-12">
-                                 <label>Confirm Userid : <?php echo $rec_id;?>   </label>
+                                 <label>Confirm Userid : <span class="text-success"><?php echo $rec_id;?></span>   </label>
                              </div>
                         </div>
                         
                         <div class="row">
                         <div class="col-md-12">
-                                <label>Username : <?php echo $rec_uname;?> </label> 
+                            <label>Username : <span class="text-success"><?php echo $rec_uname;?></span> </label>
                              </div> 
                         </div>
                         
                         <div class="row">
                              <div class="col-md-12">
-                                <label>Fullname : <?php echo $rec_fname;?>
+                                 <label>Fullname : <span class="text-success"><?php echo $rec_fname;?></span>.
                                 </label> 
                              </div>
                        </div>
@@ -320,27 +320,22 @@ if ( isset($_POST['update']) ) {
                                 <input name="myid" id="myid" tabindex="1" required="" class="" style="width:14%;" value="<?php echo $myid;?>"  type="hidden">
                                 <!--<input name="sentotp" id="sentotp" tabindex="1" required="" class="" style="width:14%;" value="<?php //echo $OTP;?>"  type="hidden">-->
                             </div>
-                        </div>
+
 
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-5">
                                  <label for="exampleInputAddress">Confirm amount to transfer</label>
-                                  <div class="input-group">
-
-                                  <?php echo "$".$amounts;?>
-                            </div>
+                                  <div class="input-group text-success"><?php echo "$".$amounts;?></div>
                             </div>
                         </div>
                         </div>
                         
                          <div class="form-group">
-                            <label for="exampleInputAddress"> You are about to transfer a sum of $<?php echo htmlspecialchars($amounts); ?> to the User with Username/UserId  <?php echo htmlspecialchars($to_receive);  ?>  </label>
-                            <div class="input-group">
-
-                               
-                            </div>
+                             <label for="exampleInputAddress"> You are about to transfer a sum of <strong> $<?php echo htmlspecialchars($amounts); ?></strong> to the User with Username/UserId  <strong><?php echo htmlspecialchars($to_receive);  ?></strong>  </label>
+                            <div class="input-group"></div>
                         </div>
+                    </div>
 
                        
 
@@ -359,10 +354,13 @@ if ( isset($_POST['update']) ) {
                             <div class="col-md-12 animateme scrollme" data-when="enter" data-from="0.2" data-to="0" data-crop="false" data-opacity="0" data-scale="0.5">
                                 <div class="panel">
                                     <div class="panel-body">
-                                         <a href="#" onclick="return doThis();" name="cancel"  class="btn btn-primary"  >  
+                                         <a href="#" onclick="return doThis();" name="cancel"  class="btn btn-danger"  >
                                          Cancel Transfer
                                          </a>
-                                        <input name="submitt" value="Click here to complete transfer" class="btn btn-primary" type="submit">             </div>
+                                        <button type="button" onclick="return show_alert()" name="submitt"  class="btn btn-success"  >
+                                            Click here to complete transfer
+                                        </button>
+<!--                                        <input name="submitt" id="submit_button" value="Click here to complete transfer" class="btn btn-success" type="submit">             </div>-->
                                 </div>
                             </div>
                         </div>
@@ -376,14 +374,67 @@ if ( isset($_POST['update']) ) {
 
 
     </div> <!-- / row -->
+<script src="assets/js/jquery-2.2.4.min.js" type="text/javascript"></script>
+<script src="assets/js/bootbox.min.js" type="text/javascript"></script>
 <script >
+    // $(document).ready(function () {
+    //     $('#submit_button')click(function(e) {
+    //         // e.preventDefault();
+    //         // e.stopPropagation();
+    //         // e.stopImmediatePropagation();
+    //
+    //         bootbox.confirm({
+    //             message: "This is a confirm with custom button text and color! Do you like it?",
+    //             buttons: {
+    //                 confirm: {
+    //                     label: 'Yes',
+    //                     className: 'btn-success'
+    //                 },
+    //                 cancel: {
+    //                     label: 'No',
+    //                     className: 'btn-danger'
+    //                 }
+    //             },
+    //             callback: function (result) {
+    //                 if(result == true){
+    //                     $("#bankinfo_form").submit();
+    //                 }
+    //             }
+    //         });
+    //         return false;
+    //     });
+    // });
+    // //
+
     function show_alert() {
-  if(confirm("Do you really want to do this?"))
-    document.getElementById("bankinfo_form").submit();
-  else
-    return false;
-}
-    
+  // if(confirm("Do you really want to do this?"))
+  //   document.getElementById("bankinfo_form").submit();
+  // else
+  //   return false;
+        bootbox.confirm({
+            message: "This is a confirm with custom button text and color! Do you like it?",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if(result == true){
+                   $("#bankinfo_form").submit();
+                }
+            }
+        });
+        return false;
+    }
+
+    function submit_form() {
+          document.getElementById("bankinfo_form").submit();
+    }
 </script>
 
 

@@ -1,5 +1,11 @@
-<?php include('head.php'); ?>
 <?php
+    include('head.php');
+
+    require_once 'app/init.php';
+    require_once 'includes/UserClass.php';
+    $userClass = new UserClass();
+
+
 	if( isset($_POST['btn-paid']) ) {
 	    
 	    if(($my_userName !='Admin1') && ($my_userName !='Admin2')){
@@ -9,18 +15,18 @@
         $user_id = trim($_POST['user_id']); 
         $amount = trim($_POST['amount']);  
         $fund_id = trim($_POST['fund_id']);    
-    mysqli_query($dbc, "UPDATE `pending` SET `status`= 'paid' WHERE `id`='$fund_id'");
-      
-    
+        mysqli_query($dbc, "UPDATE `pending` SET `status`= 'paid' WHERE `id`='$fund_id'");
 
-$query = "SELECT * FROM `user_rank` WHERE `myid` = '$user_id'";
-$res = mysqli_query($dbc, $query);
-$row = mysqli_fetch_array($res);
 
-$bal = $row[balance];  
-$newbalance = $bal - $amount;
 
- mysqli_query($dbc, "UPDATE `user_rank` SET `balance`=$newbalance WHERE `myid`='$user_id'");
+        $query = "SELECT * FROM `user_rank` WHERE `myid` = '$user_id'";
+        $res = mysqli_query($dbc, $query);
+        $row = mysqli_fetch_array($res);
+
+        $bal = $row[balance];
+        $newbalance = $bal - $amount;
+
+        mysqli_query($dbc, "UPDATE `user_rank` SET `balance`=$newbalance WHERE `myid`='$user_id'");
  
 	}
       
@@ -88,7 +94,7 @@ $totalpages = max(ceil($total/$itemsperpage),1);
                     <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_0_length"> <form id="maxdisplay" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off"><label>Show <select  id="itemsperpage" onchange="getState(this.value)"  name="itemsperpage" aria-controls="DataTables_Table_0" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div> </form> <form id="search" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" autocomplete="off"> <div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Search:<input name="userN" type="text"></input> </label></div></form>
                   <table class="table datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                     <thead>
-                      <tr><th >S/No.</th> <th >User Id</th>  <th >Amount in Dollar</th>   <th >Amount in Naira</th>    <th >Bank's Name</th>    <th >Account Number</th> <th >Date Raised</th> <th >Status/Action</th></tr>
+                      <tr><th >S/No.</th> <th >Username</th>  <th >Amount in Dollar</th>   <th >Amount in Naira</th>    <th >Bank's Name</th>    <th >Account Number</th> <th >Date Raised</th> <th >Status/Action</th></tr>
 
 
 
@@ -101,21 +107,22 @@ $query= mysqli_query($dbc,"SELECT * FROM `pending` WHERE `userName`='$userN'");
 $srow =  mysqli_fetch_array($query);
 ?>
 
-                      <?php if(count($srow) < 1) { ?>
-                          <tr class="odd"><td colspan="7" class="dataTables_empty" valign="top">No matching records found</td></tr>
+          <?php if(count($srow) < 1) { ?>
+              <tr class="odd"><td colspan="7" class="dataTables_empty" valign="top">No matching records found</td></tr>
 
-                      <?php } ?>
-                      <?php
-                            while ($row = mysqli_fetch_array($query)) {
-$ref_email[$i] =  $row['email'];
-$fund_id[$i] =  $row['id'];
-$ref_amount_in_n[$i] =  $row['amount_in_n'];
-$ref_amount_in_d[$i]= $row['amount'];
-$ref_user_id[$i]= $row['user_id'];
-$ref_date[$i]= $row['added'];
-$ref_bankName[$i]= $row['bankName'];
-$ref_accNo[$i]= $row['accNo'];
-$ref_status[$i]= $row['status'];
+          <?php } ?>
+          <?php
+                while ($row = mysqli_fetch_array($query)) {
+                    $ref_email[$i] =  $row['email'];
+                    $fund_id[$i] =  $row['id'];
+                    $ref_amount_in_n[$i] =  $row['amount_in_n'];
+                    $ref_amount_in_d[$i]= $row['amount'];
+                    $ref_user_id[$i]= $row['user_id'];
+                    $ref_username[$i]= $userClass->getUsername($row['user_id']);
+                    $ref_date[$i]= $row['added'];
+                    $ref_bankName[$i]= $row['bankName'];
+                    $ref_accNo[$i]= $row['accNo'];
+                    $ref_status[$i]= $row['status'];
 
     ?>
 
@@ -124,7 +131,7 @@ $ref_status[$i]= $row['status'];
 
                           <th scope="row" class="sorting_1"><?php echo $i;?></th>
 
-                          <td><?php echo $ref_user_id[$i];?></td>
+                          <td><?php echo $ref_username[$i];?></td>
                           <td><?php echo $ref_amount_in_d[$i];?></td>
                           <td><?php echo $ref_amount_in_n[$i];?></td>
                           <td><?php echo $ref_bankName[$i];?></td>
@@ -170,7 +177,8 @@ $ref_status[$i]= $row['status'];
                                 $fund_id[$i] =  $row['id']; 
                                 $ref_amount_in_n[$i] =  $row['amount_in_n'];                               
                                 $ref_amount_in_d[$i]= $row['amount']; 
-                                $ref_user_id[$i]= $row['user_id']; 
+                                $ref_user_id[$i]= $row['user_id'];
+                                $ref_username[$i]= $userClass->getUsername($row['user_id']);
                                 $ref_date[$i]= $row['added'];  
                                 $ref_bankName[$i]= $row['bankName'];  
                                 $ref_accNo[$i]= $row['accNo'];  
@@ -182,7 +190,7 @@ $ref_status[$i]= $row['status'];
                                 
                         <th scope="row" class="sorting_1"><?php echo $start_count;?></th>
                                 
-                                <td><?php echo $ref_user_id[$i];?></td>
+                                <td><?php echo $ref_username[$i];?></td>
                                 <td><?php echo $ref_amount_in_d[$i];?></td>                      
                                 <td><?php echo $ref_amount_in_n[$i];?></td>                     
                                 <td><?php echo $ref_bankName[$i];?></td>                     
